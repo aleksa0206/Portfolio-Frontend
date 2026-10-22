@@ -1,5 +1,5 @@
 <article class="doc">
-  <h1>contact</h1>
+  <h1>{{ content.text('contact.heading') }}</h1>
   <dl class="kv">
     @if (content.about()?.email; as email) {
       <dt>email</dt>
@@ -37,7 +37,7 @@
     </dd>
   </dl>
 
-  <h2>send a message</h2>
+  <h2>{{ content.text('contact.formHeading') }}</h2>
   <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
       <label for="name">Name</label>
