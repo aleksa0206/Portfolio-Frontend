@@ -75,6 +75,11 @@ export class App {
       this.url();
       untracked(() => this.sidebarOpen.set(false));
     });
+    // Tab icon uploaded in the admin panel replaces the static favicon.svg
+    effect(() => {
+      const icon = this.content.about()?.faviconUrl;
+      if (icon) document.querySelector<HTMLLinkElement>('link[rel="icon"]')?.setAttribute('href', icon);
+    });
   }
 
   showTerminal(terminal: TerminalComponent) {

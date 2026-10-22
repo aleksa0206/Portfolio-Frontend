@@ -7,7 +7,7 @@
           ><span>{{ ' ' + entry.command }}</span>
         </div>
       }
-      @for (line of entry.out; track $index) {
+      @for (line of entry.welcome ? welcome() : entry.out; track $index) {
         <app-output-line [line]="line" />
       }
     }

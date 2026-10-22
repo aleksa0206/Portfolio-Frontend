@@ -5,6 +5,7 @@ import { Education } from '../models/education.model';
 import { License } from '../models/license.model';
 import { Project } from '../models/project.model';
 import { PROFILE } from '../constants/profile';
+import { SITE_TEXTS, SiteTextKey } from '../constants/site-texts';
 import { AboutService } from './about.service';
 import { EducationService } from './education.service';
 import { LicenseService } from './license.service';
@@ -25,6 +26,10 @@ export class ContentService {
   isLoading = signal(true);
 
   location = computed(() => this.about()?.location || PROFILE.location);
+
+  text(key: SiteTextKey): string {
+    return this.about()?.texts?.[key]?.trim() || SITE_TEXTS[key].default;
+  }
 
   // Called on startup and again after leaving the admin panel, so edits show up immediately.
   load() {

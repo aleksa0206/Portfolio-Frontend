@@ -4,6 +4,9 @@ export interface About {
   title: string;
   bio: string;
   photoUrl?: string;
+  faviconUrl?: string;
+  tagline?: string;
+  texts?: Partial<Record<string, string>>;
   email?: string;
   phone?: string;
   location?: string;
@@ -15,6 +18,9 @@ export interface AboutInput {
   title: string;
   bio: string;
   photoUrl?: string;
+  faviconUrl?: string;
+  tagline?: string;
+  texts?: Partial<Record<string, string>>;
   email?: string;
   phone?: string;
   location?: string;

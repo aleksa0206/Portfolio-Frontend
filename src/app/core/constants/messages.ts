@@ -20,6 +20,7 @@ export enum MessageKey {
   DELETE_CONFIRM = 'DELETE_CONFIRM',
   CONTACT_SEND_SUCCESS = 'CONTACT_SEND_SUCCESS',
   README_LOAD_FAILED = 'README_LOAD_FAILED',
+  IMAGE_LOAD_FAILED = 'IMAGE_LOAD_FAILED',
 }
 
 export const Messages: Record<MessageKey, string> = {
@@ -44,4 +45,5 @@ export const Messages: Record<MessageKey, string> = {
   [MessageKey.DELETE_CONFIRM]: 'Are you sure you want to delete this entry?',
   [MessageKey.CONTACT_SEND_SUCCESS]: 'Your message has been sent successfully!',
   [MessageKey.README_LOAD_FAILED]: "Couldn't fetch README.md from GitHub right now.",
+  [MessageKey.IMAGE_LOAD_FAILED]: "Couldn't read that image. Try a JPG, PNG or WebP file.",
 };

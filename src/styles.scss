@@ -92,6 +92,11 @@ button {
   }
 }
 
+/* Admin-entered text: keep the line breaks typed in the textarea */
+.text {
+  white-space: pre-line;
+}
+
 /* Terminal-style output, shared by the terminal and file previews */
 .output-line {
   display: block;

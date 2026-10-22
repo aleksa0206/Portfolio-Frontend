@@ -13,7 +13,7 @@ import { firstValueFrom } from 'rxjs';
 import { ContentService } from '../core/services/content.service';
 import { ReadmeService } from '../core/services/readme.service';
 import { PROFILE } from '../core/constants/profile';
-import { COMMAND_NAMES, Line, execute } from './commands';
+import { COMMAND_NAMES, Line, execute, textLines } from './commands';
 import { complete } from './complete';
 import { PortfolioData, buildFs } from './portfolio-fs';
 import { HOME, displayPath } from './vfs';
@@ -23,14 +23,10 @@ interface Entry {
   prompt?: string;
   command?: string;
   out: Line[];
+  welcome?: true; // rendered from welcome(), so it updates once the About text loads
 }
 
-const WELCOME: Line[] = [
-  [
-    {
-      text: "Hi, I'm Aleksa. This is my portfolio, and it's a shell, so feel free to look around.",
-    },
-  ],
+const HINT: Line[] = [
   [
     { text: 'Type ' },
     { text: 'help', tone: 'accent' },
@@ -59,7 +55,12 @@ export class TerminalComponent {
   cwd = signal(HOME);
   prompt = computed(() => `${PROFILE.user}@${PROFILE.host}:${displayPath(this.cwd())}$`);
   title = computed(() => `${PROFILE.user}@${PROFILE.host}: ${displayPath(this.cwd())}`);
-  entries = signal<Entry[]>([{ out: WELCOME }]);
+  entries = signal<Entry[]>([{ welcome: true, out: [] }]);
+  welcome = computed<Line[]>(() =>
+    this.content.isLoading()
+      ? HINT
+      : [...textLines(this.content.text('terminal.welcome')), ...HINT],
+  );
   value = signal('');
   busy = signal(false);
 

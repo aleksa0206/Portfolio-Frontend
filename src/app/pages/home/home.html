@@ -7,23 +7,26 @@
       <div>
         <h1>{{ about.fullName }}</h1>
         <p class="meta">{{ about.title }} · {{ content.location() }}</p>
+        @if (about.tagline) {
+          <p class="text tagline">{{ about.tagline }}</p>
+        }
       </div>
     </header>
 
-    <p>{{ about.bio }}</p>
+    <p class="text">{{ about.bio }}</p>
 
-    <h2>where to next</h2>
+    <h2>{{ content.text('home.next.heading') }}</h2>
     <dl class="kv">
       <dt><a routerLink="/projects">projects/</a></dt>
-      <dd>things I've built, with their READMEs</dd>
+      <dd class="text">{{ content.text('home.next.projects') }}</dd>
       <dt><a routerLink="/education">education.md</a></dt>
-      <dd>where I studied</dd>
+      <dd class="text">{{ content.text('home.next.education') }}</dd>
       <dt><a routerLink="/contact">contact.txt</a></dt>
-      <dd>email, GitHub, or send me a message</dd>
+      <dd class="text">{{ content.text('home.next.contact') }}</dd>
     </dl>
 
     <p class="meta">
-      Or use the terminal: <code>help</code>, <code>ls</code>, <code>cat about.md</code>
+      {{ content.text('home.terminalHint') }} <code>help</code>, <code>ls</code>, <code>cat about.md</code>
     </p>
   </article>
 } @else if (content.isLoading()) {

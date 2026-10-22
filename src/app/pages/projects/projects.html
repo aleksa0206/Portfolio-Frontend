@@ -18,7 +18,7 @@
   @if (selected(); as p) {
     <article class="doc preview">
       <h1>{{ p.title }}</h1>
-      <p>{{ p.description }}</p>
+      <p class="text">{{ p.description }}</p>
       @if (p.imageUrl) {
         <img class="shot" [src]="p.imageUrl" [alt]="p.title" />
       }

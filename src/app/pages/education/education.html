@@ -6,7 +6,7 @@
       <h2>{{ item.degree }}{{ item.fieldOfStudy ? ', ' + item.fieldOfStudy : '' }}</h2>
       <p class="meta">{{ item.institution }} · {{ yearRange(item) }}</p>
       @if (item.description) {
-        <p>{{ item.description }}</p>
+        <p class="text">{{ item.description }}</p>
       }
     </section>
   } @empty {
