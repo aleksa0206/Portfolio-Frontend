@@ -107,18 +107,22 @@ export class TerminalComponent {
       const state = prank.state();
       if (state === 'off') return;
       untracked(() => {
+        const ip = prank.ip();
+        // idle: "I see you, <ip>" then the message; malicious command: the message ends by
+        // pointing at the IP, so the IP comes after it
+        const message =
+          prank.reason() === 'malicious'
+            ? [
+                ...textLines(this.content.text('prank.malicious')),
+                [{ text: ip ?? '(nice try hiding it)', tone: 'error' as const }],
+              ]
+            : [
+                [{ text: ip ? `I see you, ${ip}` : 'I see you.', tone: 'error' as const }],
+                ...textLines(this.content.text('prank.message')),
+              ];
         const out: Line[] =
           state === 'evil'
-            ? [
-                [],
-                ...EVIL_FACE.map((l): Line => [{ text: l, tone: 'error' }]),
-                [],
-                [{ text: prank.ip() ? `I see you, ${prank.ip()}` : 'I see you.', tone: 'error' }],
-                ...textLines(
-                  this.content.text(prank.reason() === 'malicious' ? 'prank.malicious' : 'prank.message'),
-                ),
-                [],
-              ]
+            ? [[], ...EVIL_FACE.map((l): Line => [{ text: l, tone: 'error' }]), [], ...message, []]
             : [...textLines(this.content.text('prank.kidding')), []];
         this.entries.update((e) => [...e, { out }]);
         this.scrollToEnd();

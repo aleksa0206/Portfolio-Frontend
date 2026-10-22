@@ -45,8 +45,9 @@ export const SITE_TEXTS = {
     default: "Didn't anyone teach you not to click on everything you see on the internet?",
   },
   'prank.malicious': {
-    label: 'Easter egg: message after a dangerous command (rm -rf, sudo, ...)',
-    default: "We had a deal. You agreed not to do anything stupid.",
+    label: 'Easter egg: message after a dangerous command (rm -rf, sudo, ...), the IP follows it',
+    default:
+      "You said you wouldn't do anything stupid. Now I have to come over and tell you in person.\nBy the way, this is your IP address:",
   },
   'prank.kidding': {
     label: 'Easter egg: message when it lets go',
