@@ -74,10 +74,10 @@
         <li><a routerLink="/licenses" routerLinkActive="active" class="t-dir">certificates/</a></li>
         <li><a routerLink="/contact" routerLinkActive="active">contact.txt</a></li>
         <li>
-          <button type="button" (click)="runInTerminal(term, 'cat ~/skills.md')">skills.md</button>
+          <a routerLink="/skills" routerLinkActive="active">skills.md</a>
         </li>
         <li>
-          <button type="button" (click)="runInTerminal(term, 'cat ~/README.md')">README.md</button>
+          <a routerLink="/readme" routerLinkActive="active">README.md</a>
         </li>
         <li>
           <button type="button" class="t-exec" (click)="runInTerminal(term, '~/hire-aleksa.sh')">

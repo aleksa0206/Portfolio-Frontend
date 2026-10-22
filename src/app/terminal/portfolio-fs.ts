@@ -64,7 +64,7 @@ function aboutMd(d: PortfolioData): string {
   return `# ${d.about.fullName}\n${tagline}${d.about.title} · ${d.location}\n\n${d.about.bio}\n\nMore: cat contact.txt, cd projects`;
 }
 
-function skillsMd(projects: Project[]): string {
+export function skillsMd(projects: Project[]): string {
   const skills = skillsByTech(projects);
   if (!skills.length) return '# skills\n\nNo projects listed yet.';
   const width = Math.max(...skills.map(([t]) => t.length)) + 2;
@@ -120,7 +120,7 @@ function licenseTxt(l: License): string {
   ]);
 }
 
-const SITE_README = `# aleksa@portfolio
+export const SITE_README = `# aleksa@portfolio
 
 My portfolio, presented as a small Linux-style shell.
 The files here are a virtual filesystem built from the same data as the rest
@@ -159,9 +159,9 @@ export function buildFs(d: PortfolioData): VDir {
   );
 
   const home = dir('aleksa', [
-    file('README.md', SITE_README),
+    file('README.md', SITE_README, { route: '/readme' }),
     file('about.md', aboutMd(d), { route: '/' }),
-    file('skills.md', skillsMd(d.projects)),
+    file('skills.md', skillsMd(d.projects), { route: '/skills' }),
     file('education.md', educationMd(d.education, d.about?.texts?.['education.heading']?.trim() || undefined), {
       route: '/education',
     }),

@@ -20,6 +20,12 @@ const WORKSPACES = [
   { route: '/contact', file: 'contact.txt' },
 ];
 
+// Other files with their own view (not workspaces)
+const FILE_PAGES = [
+  { route: '/skills', file: 'skills.md' },
+  { route: '/readme', file: 'README.md' },
+];
+
 type TerminalState = 'open' | 'max' | 'closed';
 
 const formatClock = () =>
@@ -57,7 +63,7 @@ export class App {
   viewTitle = computed(() => {
     const path = this.url().split(/[?#]/)[0];
     if (path.startsWith('/projects/')) return `~${path}/`;
-    const ws = WORKSPACES.find((w) => w.route === path);
+    const ws = [...WORKSPACES, ...FILE_PAGES].find((w) => w.route === path);
     return ws ? `~/${ws.file}` : '~';
   });
 
