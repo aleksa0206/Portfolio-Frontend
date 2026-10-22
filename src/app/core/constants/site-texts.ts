@@ -8,6 +8,7 @@ export const SITE_TEXTS = {
   },
   'home.next.heading': { label: 'Home: links heading', default: 'where to next' },
   'education.heading': { label: 'Education: page heading', default: 'education' },
+  'certificates.heading': { label: 'Certificates: page heading', default: 'certificates' },
   'home.next.projects': {
     label: 'Home: projects/ description',
     default: "things I've built, with their READMEs",
