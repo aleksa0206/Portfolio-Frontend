@@ -15,7 +15,7 @@ import { SITE_TEXTS, unknownCommands } from '../../../core/constants/site-texts'
 import { COMMAND_NAMES } from '../../../terminal/commands';
 
 // Longest side in px. Images are stored inline in the DB, so keep them small.
-const IMAGE_SIZE = { photoUrl: 256, faviconUrl: 64 };
+const IMAGE_SIZE = { faviconUrl: 64 };
 
 // Blocks saving a site text whose `backticked` command the terminal doesn't have
 const knownCommands: ValidatorFn = (c) => {
@@ -42,7 +42,6 @@ export class AdminAbout implements OnInit {
     title: ['', [Validators.required]],
     tagline: [''],
     bio: ['', [Validators.required]],
-    photoUrl: [''],
     faviconUrl: [''],
     email: [''],
     phone: [''],
@@ -68,7 +67,6 @@ export class AdminAbout implements OnInit {
             title: data.title,
             tagline: data.tagline ?? '',
             bio: data.bio,
-            photoUrl: data.photoUrl ?? '',
             faviconUrl: data.faviconUrl ?? '',
             email: data.email ?? '',
             phone: data.phone ?? '',
@@ -142,7 +140,7 @@ export class AdminAbout implements OnInit {
   }
 }
 
-// Scales the image down to fit `size` and re-encodes it as a data URL (PNG keeps icon transparency)
+// Scales the image down to fit `size` and re-encodes it as a PNG data URL (keeps icon transparency)
 async function resize(file: File, size: number): Promise<string> {
   const bitmap = await createImageBitmap(file);
   const scale = Math.min(1, size / Math.max(bitmap.width, bitmap.height));
@@ -151,5 +149,5 @@ async function resize(file: File, size: number): Promise<string> {
   canvas.height = Math.round(bitmap.height * scale);
   canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
   bitmap.close();
-  return size <= 64 ? canvas.toDataURL('image/png') : canvas.toDataURL('image/jpeg', 0.85);
+  return canvas.toDataURL('image/png');
 }

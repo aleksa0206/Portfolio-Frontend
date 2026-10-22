@@ -1,9 +1,6 @@
 @if (content.about(); as about) {
   <article class="doc">
     <header class="head">
-      @if (about.photoUrl) {
-        <img class="avatar" [src]="about.photoUrl" [alt]="about.fullName" width="64" height="64" />
-      }
       <div>
         <h1>{{ about.fullName }}</h1>
         @if (about.tagline) {

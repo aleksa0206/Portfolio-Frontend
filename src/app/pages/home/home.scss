@@ -17,13 +17,6 @@
   }
 }
 
-.avatar {
-  flex-shrink: 0;
-  border-radius: var(--radius);
-  border: 1px solid var(--color-line);
-  object-fit: cover;
-}
-
 .bio {
   font-size: 0.9rem;
 }
