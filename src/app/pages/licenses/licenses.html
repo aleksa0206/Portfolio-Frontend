@@ -24,8 +24,8 @@
       </dl>
     </section>
   } @empty {
-    <p class="meta">
-      {{ content.isLoading() ? 'reading ~/certificates…' : 'total 0, nothing listed here yet.' }}
+    <p class="meta text">
+      {{ content.isLoading() ? 'reading ~/certificates…' : content.text('certificates.empty') }}
     </p>
   }
 </article>
