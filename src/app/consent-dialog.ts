@@ -13,13 +13,14 @@ const SEEN_KEY = 'consent-seen';
 
 function seen(): boolean {
   try {
-    return localStorage.getItem(SEEN_KEY) === '1';
+    return sessionStorage.getItem(SEEN_KEY) === '1';
   } catch {
     return false;
   }
 }
 
-// Joke "do you agree not to do anything stupid" popup, shown once per browser.
+// Joke "do you agree not to do anything stupid" popup, shown each time the site is opened
+// (sessionStorage: survives a refresh, gone when the tab is closed).
 // "I don't agree" disappears as soon as the visitor tries to reach it.
 @Component({
   selector: 'app-consent-dialog',
@@ -136,9 +137,9 @@ export class ConsentDialog {
 
   close() {
     try {
-      localStorage.setItem(SEEN_KEY, '1');
+      sessionStorage.setItem(SEEN_KEY, '1');
     } catch {
-      // private mode etc.: the popup just shows again next visit
+      // storage blocked: the popup just shows again on refresh
     }
     this.dialogRef().nativeElement.close();
   }
