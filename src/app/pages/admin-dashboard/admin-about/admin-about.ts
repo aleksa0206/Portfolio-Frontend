@@ -5,14 +5,12 @@ import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { PROFILE } from '../../../core/constants/profile';
 import { AboutService } from '../../../core/services/about.service';
 import { MessageKey, Messages } from '../../../core/constants/messages';
-import { CONSENT_REPEAT, SITE_TEXTS, unknownCommands } from '../../../core/constants/site-texts';
-import { COMMAND_NAMES } from '../../../terminal/commands';
+import { CONSENT_REPEAT, SITE_TEXTS } from '../../../core/constants/site-texts';
 
 // Longest side in px. Images are stored inline in the DB, so keep them small.
 const IMAGE_SIZE = { faviconUrl: 64 };
@@ -20,12 +18,6 @@ const IMAGE_SIZE = { faviconUrl: 64 };
 // Site texts edited with a select instead of a textarea
 const SELECT_TEXTS = ['consent.repeat', 'prank.minutes'];
 const PRANK_MINUTES = [1, 3, 5, 10, 15];
-
-// Blocks saving a site text whose `backticked` command the terminal doesn't have
-const knownCommands: ValidatorFn = (c) => {
-  const bad = unknownCommands(c.value ?? '', COMMAND_NAMES);
-  return bad.length ? { unknownCommands: bad } : null;
-};
 
 @Component({
   imports: [ReactiveFormsModule],
@@ -53,7 +45,7 @@ export class AdminAbout implements OnInit {
     linkedinUrl: ['', Validators.pattern(/^https:\/\/\S+$/)],
     githubUrl: ['', Validators.pattern(/^https:\/\/\S+$/)],
     contactLinks: this.fb.array<FormGroup>([]),
-    texts: this.fb.group(Object.fromEntries(Object.keys(SITE_TEXTS).map((k) => [k, ['', knownCommands]]))),
+    texts: this.fb.group(Object.fromEntries(Object.keys(SITE_TEXTS).map((k) => [k, '']))),
   });
   // contact notes sit next to their contact field and the popup repeat is a select, not in this list
   siteTexts = Object.entries(SITE_TEXTS)

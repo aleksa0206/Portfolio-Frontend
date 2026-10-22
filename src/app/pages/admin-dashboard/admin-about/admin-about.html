@@ -142,9 +142,6 @@
               [formControlName]="t.key"
               [placeholder]="t.default"
             ></textarea>
-            @if (aboutForm.get(['texts', t.key])?.errors?.['unknownCommands']; as bad) {
-              <p class="field-error">The terminal has no command: {{ bad.join(', ') }}</p>
-            }
           </div>
         }
       </div>

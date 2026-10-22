@@ -62,7 +62,7 @@ export const SITE_TEXTS = {
 
 export type SiteTextKey = keyof typeof SITE_TEXTS;
 
-// Text in `backticks` is a terminal command: shown highlighted and checked in the admin form.
+// Text in `backticks` is a terminal command, shown highlighted.
 export function splitCode(text: string): { text: string; code: boolean }[] {
   return text
     .split('`')
@@ -70,13 +70,6 @@ export function splitCode(text: string): { text: string; code: boolean }[] {
     .filter((p) => p.text);
 }
 
-// Backticked commands the terminal doesn't have (paths like ./hire-aleksa.sh are allowed).
-export function unknownCommands(text: string, commands: readonly string[]): string[] {
-  return splitCode(text)
-    .filter((p) => p.code)
-    .map((p) => p.text.trim().split(/\s+/)[0])
-    .filter((name) => !name.includes('/') && !commands.includes(name));
-}
 
 export const CONSENT_REPEAT = {
   visit: 'every time the site is opened (not on refresh)',
