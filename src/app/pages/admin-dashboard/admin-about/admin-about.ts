@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { AboutService } from '../../../core/services/about.service';
 import { MessageKey, Messages } from '../../../core/constants/messages';
 import { SITE_TEXTS, unknownCommands } from '../../../core/constants/site-texts';
@@ -40,6 +40,7 @@ export class AdminAbout implements OnInit {
     phone: [''],
     location: [''],
     linkedinUrl: ['', Validators.pattern(/^https:\/\/\S+$/)],
+    contactLinks: this.fb.array<FormGroup>([]),
     texts: this.fb.group(Object.fromEntries(Object.keys(SITE_TEXTS).map((k) => [k, ['', knownCommands]]))),
   });
   siteTexts = Object.entries(SITE_TEXTS).map(([key, t]) => ({ key, ...t }));
@@ -62,6 +63,7 @@ export class AdminAbout implements OnInit {
             linkedinUrl: data.linkedinUrl ?? '',
             texts: data.texts ?? {},
           });
+          (data.contactLinks ?? []).forEach((l) => this.addContactLink(l.label, l.value));
         }
         this.isLoading.set(false);
       },
@@ -70,6 +72,19 @@ export class AdminAbout implements OnInit {
         this.isLoading.set(false);
       },
     });
+  }
+
+  addContactLink(label = '', value = '') {
+    this.aboutForm.controls.contactLinks.push(
+      this.fb.group({
+        label: [label, [Validators.required, Validators.maxLength(30)]],
+        value: [value, [Validators.required, Validators.maxLength(300)]],
+      }),
+    );
+  }
+
+  removeContactLink(i: number) {
+    this.aboutForm.controls.contactLinks.removeAt(i);
   }
 
   async onImage(event: Event, field: keyof typeof IMAGE_SIZE) {

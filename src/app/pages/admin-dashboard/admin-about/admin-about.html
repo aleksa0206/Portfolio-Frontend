@@ -69,6 +69,19 @@
         }
       </div>
 
+      <h3>Other contacts</h3>
+      <p class="hint">Extra rows on the contact page, e.g. twitter → https://x.com/you.</p>
+      <div formArrayName="contactLinks">
+        @for (link of aboutForm.controls.contactLinks.controls; track link; let i = $index) {
+          <div class="contact-row" [formGroupName]="i">
+            <input type="text" formControlName="label" placeholder="label" aria-label="Label" />
+            <input type="text" formControlName="value" placeholder="value or https:// link" aria-label="Value" />
+            <button type="button" (click)="removeContactLink(i)">Remove</button>
+          </div>
+        }
+      </div>
+      <button type="button" class="add-row" (click)="addContactLink()">+ Add contact</button>
+
       <h3>Site texts</h3>
       <p class="hint">
         Leave a field empty to keep the default shown in it. Put commands in `backticks` to

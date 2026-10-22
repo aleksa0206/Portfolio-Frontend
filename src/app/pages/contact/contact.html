@@ -17,6 +17,16 @@
         <a [href]="linkedin" target="_blank" rel="noopener">{{ linkedin }}</a>
       </dd>
     }
+    @for (link of content.about()?.contactLinks ?? []; track $index) {
+      <dt>{{ link.label }}</dt>
+      <dd>
+        @if (link.value.startsWith('https://')) {
+          <a [href]="link.value" target="_blank" rel="noopener">{{ link.value }}</a>
+        } @else {
+          {{ link.value }}
+        }
+      </dd>
+    }
     <dt>location</dt>
     <dd>{{ content.location() }}</dd>
   </dl>

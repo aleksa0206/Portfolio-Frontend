@@ -90,6 +90,7 @@ function contactTxt(d: PortfolioData): string {
     ['phone', d.about?.phone],
     ['github', PROFILE.github],
     ['linkedin', d.about?.linkedinUrl],
+    ...(d.about?.contactLinks ?? []).map((l): [string, string] => [l.label, l.value]),
     ['location', d.location],
   ])}\n\nPrefer a form? Run: open contact.txt`;
 }
