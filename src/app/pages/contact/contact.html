@@ -1,6 +1,21 @@
-<section class="form-page">
-  <h1>Contact Me</h1>
+<article class="doc">
+  <h1>contact</h1>
+  <dl class="kv">
+    @if (content.about()?.email; as email) {
+      <dt>email</dt>
+      <dd>
+        <a [href]="'mailto:' + email">{{ email }}</a>
+      </dd>
+    }
+    <dt>github</dt>
+    <dd>
+      <a [href]="github" target="_blank" rel="noopener">{{ github }}</a>
+    </dd>
+    <dt>location</dt>
+    <dd>{{ content.location() }}</dd>
+  </dl>
 
+  <h2>send a message</h2>
   <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
       <label for="name">Name</label>
@@ -43,4 +58,4 @@
       </button>
     </div>
   </form>
-</section>
+</article>

@@ -18,6 +18,7 @@ export const routes: Routes = [
   { path: 'education', component: EducationComponent },
   { path: 'licenses', component: LicensesComponent },
   { path: 'projects', component: ProjectsComponent },
+  { path: 'projects/:slug', component: ProjectsComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'admin/login', component: AdminLogin },
   {

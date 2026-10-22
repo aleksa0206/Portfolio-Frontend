@@ -1,49 +1,93 @@
-import { Component, signal, inject } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive, Router, NavigationStart, NavigationEnd } from '@angular/router';
-import { filter } from 'rxjs';
+import { Component, DestroyRef, computed, effect, inject, signal, untracked } from '@angular/core';
+import { Location } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { filter, map } from 'rxjs';
+import { ContentService } from './core/services/content.service';
+import { PROFILE } from './core/constants/profile';
+import { TerminalComponent } from './terminal/terminal';
+import { MatrixRain } from './matrix-rain';
+import { slugify } from './terminal/portfolio-fs';
 
-const ROUTE_LABELS: Record<string, string> = {
-  '/': 'HOME',
-  '/education': 'EDUCATION',
-  '/licenses': 'LICENSES',
-  '/projects': 'PROJECTS',
-  '/contact': 'CONTACT',
-  '/admin/login': 'ADMIN',
-};
+// Public routes, shown as workspaces in the top panel and as files in the sidebar
+const WORKSPACES = [
+  { route: '/', file: 'about.md' },
+  { route: '/projects', file: 'projects/' },
+  { route: '/education', file: 'education.md' },
+  { route: '/licenses', file: 'certificates/' },
+  { route: '/contact', file: 'contact.txt' },
+];
+
+type TerminalState = 'open' | 'max' | 'closed';
+
+const formatClock = () =>
+  new Date()
+    .toLocaleString('en-GB', {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+    .replace(',', '');
 
 @Component({
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, TerminalComponent, MatrixRain],
   selector: 'app-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',
 })
 export class App {
-  protected readonly title = signal('portfolio-frontend');
   private router = inject(Router);
-  private hideTimeout?: ReturnType<typeof setTimeout>;
+  protected content = inject(ContentService);
+  protected readonly workspaces = WORKSPACES;
+  protected readonly slugify = slugify;
+  protected readonly host = `${PROFILE.user}@${PROFILE.host}`;
 
-  isTransitioning = signal(false);
-  transitionText = signal('');
+  url = toSignal(
+    this.router.events.pipe(
+      filter((e) => e instanceof NavigationEnd),
+      map((e) => e.urlAfterRedirects),
+    ),
+    { initialValue: inject(Location).path() || '/' },
+  );
+  isAdmin = computed(() => this.url().startsWith('/admin'));
+  viewTitle = computed(() => {
+    const path = this.url().split(/[?#]/)[0];
+    if (path.startsWith('/projects/')) return `~${path}/`;
+    const ws = WORKSPACES.find((w) => w.route === path);
+    return ws ? `~/${ws.file}` : '~';
+  });
+
+  terminalState = signal<TerminalState>('open');
+  sidebarOpen = signal(false);
+  clock = signal(formatClock());
 
   constructor() {
-    this.router.events.pipe(filter((e) => e instanceof NavigationStart)).subscribe((event) => {
-      const navEvent = event as NavigationStart;
-      this.transitionText.set(this.getRouteLabel(navEvent.url));
+    const timer = setInterval(() => this.clock.set(formatClock()), 30_000);
+    inject(DestroyRef).onDestroy(() => clearInterval(timer));
 
-      if (this.hideTimeout) {
-        clearTimeout(this.hideTimeout);
-      }
-      this.isTransitioning.set(false);
-      setTimeout(() => this.isTransitioning.set(true), 0);
+    // (Re)load public content whenever the desktop is shown, e.g. after editing in the admin panel
+    effect(() => {
+      if (!this.isAdmin()) untracked(() => this.content.load());
     });
-
-    this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe(() => {
-      this.hideTimeout = setTimeout(() => this.isTransitioning.set(false), 1400);
+    effect(() => {
+      this.url();
+      untracked(() => this.sidebarOpen.set(false));
     });
   }
 
-  private getRouteLabel(url: string): string {
-    const basePath = '/' + url.split('/').filter(Boolean)[0] || '/';
-    return ROUTE_LABELS[url] ?? ROUTE_LABELS[basePath] ?? 'ALEKSA.';
+  showTerminal(terminal: TerminalComponent) {
+    this.terminalState.update((s) => (s === 'closed' ? 'open' : s));
+    setTimeout(() => terminal.focus());
+  }
+
+  runInTerminal(terminal: TerminalComponent, command: string) {
+    this.showTerminal(terminal);
+    terminal.run(command);
+  }
+
+  toggleMaximize() {
+    this.terminalState.update((s) => (s === 'max' ? 'open' : 'max'));
   }
 }

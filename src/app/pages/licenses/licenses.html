@@ -1,23 +1,31 @@
-<section class="page-section">
-  <p class="eyebrow">Credentials</p>
-  <h1>Licenses & Certifications</h1>
+<article class="doc">
+  <h1>certificates</h1>
 
-  @if (isLoading()) {
-    <p>Loading...</p>
-  } @else if (licenseList().length === 0) {
-    <p>No licenses yet.</p>
-  } @else {
-    <div class="card-grid">
-      @for (item of licenseList(); track item.id) {
-        <div class="card">
-          <span class="card__date">Issued {{ item.issueDate | slice:0:4 }}</span>
-          <h3>{{ item.name }}</h3>
-          <p class="card__subtitle">{{ item.issuer }}</p>
-          @if (item.credentialUrl) {
-            <a [href]="item.credentialUrl" target="_blank" class="card__link">View credential →</a>
-          }
-        </div>
-      }
-    </div>
+  @for (item of content.licenses(); track item.id) {
+    <section>
+      <h2>{{ item.name }}</h2>
+      <dl class="kv">
+        <dt>issuer</dt>
+        <dd>{{ item.issuer }}</dd>
+        <dt>issued</dt>
+        <dd>{{ item.issueDate | slice: 0 : 10 }}</dd>
+        @if (item.expiryDate) {
+          <dt>expires</dt>
+          <dd>{{ item.expiryDate | slice: 0 : 10 }}</dd>
+        }
+        @if (item.credentialUrl) {
+          <dt>credential</dt>
+          <dd>
+            <a [href]="item.credentialUrl" target="_blank" rel="noopener">{{
+              item.credentialUrl
+            }}</a>
+          </dd>
+        }
+      </dl>
+    </section>
+  } @empty {
+    <p class="meta">
+      {{ content.isLoading() ? 'reading ~/certificates…' : 'total 0, nothing listed here yet.' }}
+    </p>
   }
-</section>
+</article>

@@ -1,0 +1,55 @@
+<div class="screen" #screen (click)="focusIfNoSelection()">
+  <div role="log" aria-live="polite" aria-label="Terminal output">
+    @for (entry of entries(); track $index) {
+      @if (entry.prompt) {
+        <div class="output-line">
+          <span class="prompt">{{ entry.prompt }}</span
+          ><span>{{ ' ' + entry.command }}</span>
+        </div>
+      }
+      @for (line of entry.out; track $index) {
+        <app-output-line [line]="line" />
+      }
+    }
+  </div>
+
+  <div class="input-line" [class.busy]="busy()">
+    <label class="prompt" for="terminal-input">{{ prompt() }}</label>
+    <input
+      #input
+      id="terminal-input"
+      type="text"
+      [value]="value()"
+      (input)="onInput($event)"
+      (keydown)="onKeydown($event)"
+      [readOnly]="busy()"
+      autocomplete="off"
+      autocapitalize="off"
+      autocorrect="off"
+      spellcheck="false"
+      enterkeyhint="send"
+      aria-label="Terminal command"
+    />
+  </div>
+</div>
+
+<div class="touch-keys" aria-label="Terminal keys">
+  <button type="button" (pointerdown)="$event.preventDefault()" (click)="tab()">Tab</button>
+  <button
+    type="button"
+    (pointerdown)="$event.preventDefault()"
+    (click)="browseHistory(-1)"
+    aria-label="Previous command"
+  >
+    ↑
+  </button>
+  <button
+    type="button"
+    (pointerdown)="$event.preventDefault()"
+    (click)="browseHistory(1)"
+    aria-label="Next command"
+  >
+    ↓
+  </button>
+  <button type="button" (pointerdown)="$event.preventDefault()" (click)="submit()">Enter</button>
+</div>

@@ -1,30 +1,13 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { LicenseService } from '../../core/services/license.service';
-import { License } from '../../core/models/license.model';
+import { Component, inject } from '@angular/core';
+import { SlicePipe } from '@angular/common';
+import { ContentService } from '../../core/services/content.service';
 
 @Component({
-  imports: [CommonModule],
+  imports: [SlicePipe],
   selector: 'app-licenses',
   styleUrl: './licenses.scss',
   templateUrl: './licenses.html',
 })
-export class LicensesComponent implements OnInit {
-  private licenseService = inject(LicenseService);
-
-  licenseList = signal<License[]>([]);
-  isLoading = signal(true);
-
-  ngOnInit() {
-    this.licenseService.getAll().subscribe({
-      next: (data) => {
-        this.licenseList.set(data);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Failed to load licenses:', err);
-        this.isLoading.set(false);
-      },
-    });
-  }
+export class LicensesComponent {
+  protected content = inject(ContentService);
 }

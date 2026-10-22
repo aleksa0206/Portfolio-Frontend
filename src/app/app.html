@@ -1,31 +1,123 @@
-<div class="page-transition" [class.active]="isTransitioning()">
-  <span class="page-transition__text">{{ transitionText() }}</span>
-</div>
-
-<header class="site-header">
-  <div class="site-header__inner">
-    <a routerLink="/" class="logo">Aleksa Obradovic<span>.</span></a>
-    <nav class="main-nav">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
-        >Home</a
-      >
-      <a routerLink="/education" routerLinkActive="active">Education</a>
-      <a routerLink="/licenses" routerLinkActive="active">Licenses</a>
-      <a routerLink="/projects" routerLinkActive="active">Projects</a>
-      <a routerLink="/contact" routerLinkActive="active">Contact</a>
-    </nav>
-  </div>
-</header>
-
-<main>
+@if (isAdmin()) {
   <router-outlet />
-</main>
+} @else {
+  <app-matrix-rain />
+  <div class="desktop">
+    <header class="panel">
+      <button
+        type="button"
+        class="panel__btn panel__menu"
+        (click)="sidebarOpen.set(!sidebarOpen())"
+        [attr.aria-expanded]="sidebarOpen()"
+        aria-controls="sidebar"
+        aria-label="Toggle file tree"
+      >
+        ≡
+      </button>
+      <nav class="workspaces" aria-label="Workspaces">
+        @for (ws of workspaces; track ws.route; let i = $index) {
+          <a
+            [routerLink]="ws.route"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: ws.route === '/' }"
+            [attr.aria-label]="ws.file"
+            [title]="ws.file"
+            >{{ i + 1 }}</a
+          >
+        }
+      </nav>
+      <button
+        type="button"
+        class="panel__btn"
+        (click)="showTerminal(term)"
+        title="Terminal"
+        aria-label="Open terminal"
+      >
+        ❯_
+      </button>
+      <span class="panel__title">{{ host }}: {{ viewTitle() }}</span>
+      <time class="panel__clock">{{ clock() }}</time>
+    </header>
 
-<footer class="site-footer">
-  <div class="site-footer__inner">
-    <p>© 2026 Aleksa Obradovic. Built with Angular & Node.js.</p>
-    <div class="site-footer__links">
-      <a routerLink="/contact">Contact</a>
+    <aside id="sidebar" class="sidebar" [class.open]="sidebarOpen()" aria-label="Files">
+      <p class="sidebar__head">~/</p>
+      <ul class="tree">
+        <li>
+          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+            >about.md</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="/projects"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="t-dir"
+            >projects/</a
+          >
+          <ul>
+            @for (p of content.projects(); track p.id) {
+              <li>
+                <a
+                  [routerLink]="['/projects', slugify(p.title)]"
+                  routerLinkActive="active"
+                  class="t-dir"
+                  >{{ slugify(p.title) }}/</a
+                >
+              </li>
+            }
+          </ul>
+        </li>
+        <li><a routerLink="/education" routerLinkActive="active">education.md</a></li>
+        <li><a routerLink="/licenses" routerLinkActive="active" class="t-dir">certificates/</a></li>
+        <li><a routerLink="/contact" routerLinkActive="active">contact.txt</a></li>
+        <li>
+          <button type="button" (click)="runInTerminal(term, 'cat ~/skills.md')">skills.md</button>
+        </li>
+        <li>
+          <button type="button" (click)="runInTerminal(term, 'cat ~/README.md')">README.md</button>
+        </li>
+        <li>
+          <button type="button" class="t-exec" (click)="runInTerminal(term, '~/hire-aleksa.sh')">
+            hire-aleksa.sh*
+          </button>
+        </li>
+      </ul>
+    </aside>
+
+    <div class="workarea" [class]="'workarea term-' + terminalState()">
+      <section class="window window--term" aria-label="Terminal">
+        <div class="window__bar">
+          <span class="window__title">{{ term.title() }}</span>
+          <button
+            type="button"
+            class="window__btn"
+            (click)="toggleMaximize()"
+            [attr.aria-label]="terminalState() === 'max' ? 'Restore terminal' : 'Maximize terminal'"
+            [attr.aria-pressed]="terminalState() === 'max'"
+          >
+            {{ terminalState() === 'max' ? '❐' : '□' }}
+          </button>
+          <button
+            type="button"
+            class="window__btn"
+            (click)="terminalState.set('closed')"
+            aria-label="Close terminal"
+          >
+            ×
+          </button>
+        </div>
+        <app-terminal #term class="window__body" />
+      </section>
+
+      <section class="window window--view" [attr.aria-label]="viewTitle()">
+        <div class="window__bar">
+          <span class="window__title">{{ viewTitle() }}</span>
+        </div>
+        <div class="window__body">
+          <router-outlet />
+        </div>
+      </section>
     </div>
   </div>
-</footer>
+}

@@ -1,30 +1,15 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { EducationService } from '../../core/services/education.service';
-import { Education } from '../../core/models/education.model';
+import { Component, computed, inject } from '@angular/core';
+import { ContentService } from '../../core/services/content.service';
+import { sortedEducation, yearRange } from '../../terminal/portfolio-fs';
 
 @Component({
-  imports: [CommonModule],
   selector: 'app-education',
   styleUrl: './education.scss',
   templateUrl: './education.html',
 })
-export class EducationComponent implements OnInit {
-  private educationService = inject(EducationService);
+export class EducationComponent {
+  protected content = inject(ContentService);
+  protected readonly yearRange = yearRange;
 
-  educationList = signal<Education[]>([]);
-  isLoading = signal(true);
-
-  ngOnInit() {
-    this.educationService.getAll().subscribe({
-      next: (data) => {
-        this.educationList.set(data);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Failed to load education:', err);
-        this.isLoading.set(false);
-      },
-    });
-  }
+  educationList = computed(() => sortedEducation(this.content.education()));
 }

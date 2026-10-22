@@ -1,35 +1,60 @@
-<section class="page-section">
-  <p class="eyebrow">Selected Work</p>
-  <h1>Projects</h1>
+<div class="explorer">
+  <nav class="list" aria-label="Projects">
+    @for (p of content.projects(); track p.id) {
+      <a [routerLink]="['/projects', slugify(p.title)]" [class.active]="p === selected()">
+        <span class="t-dir">{{ slugify(p.title) }}/</span>
+        <span class="desc">{{ p.description }}</span>
+      </a>
+    } @empty {
+      <p class="meta">{{ content.isLoading() ? 'reading ~/projects…' : 'No projects yet.' }}</p>
+    }
+    <p class="meta foot">
+      {{ content.projects().length }}
+      {{ content.projects().length === 1 ? 'project' : 'projects' }} · try
+      <code>cd ~/projects</code> in the terminal
+    </p>
+  </nav>
 
-  @if (isLoading()) {
-    <p>Loading...</p>
-  } @else if (projectList().length === 0) {
-    <p>No projects yet.</p>
-  } @else {
-    <div class="card-grid">
-      @for (item of projectList(); track item.id) {
-        <div class="card card--project">
-          @if (item.imageUrl) {
-            <img [src]="item.imageUrl" [alt]="item.title" class="card__image" />
-          }
-          <h3>{{ item.title }}</h3>
-          <p class="card__body">{{ item.description }}</p>
-          <div class="tech-tags">
-            @for (tech of item.techStack.split(','); track tech) {
-              <span class="tech-tag">{{ tech.trim() }}</span>
-            }
-          </div>
-          <div class="card__links">
-            @if (item.demoUrl) {
-              <a [href]="item.demoUrl" target="_blank" class="card__link">Live demo →</a>
-            }
-            @if (item.repoUrl) {
-              <a [href]="item.repoUrl" target="_blank" class="card__link">Source →</a>
-            }
-          </div>
-        </div>
+  @if (selected(); as p) {
+    <article class="doc preview">
+      <h1>{{ p.title }}</h1>
+      <p>{{ p.description }}</p>
+      @if (p.imageUrl) {
+        <img class="shot" [src]="p.imageUrl" [alt]="p.title" />
       }
-    </div>
+      <dl class="kv">
+        <dt>stack</dt>
+        <dd>{{ techList(p).join(' · ') }}</dd>
+        @if (p.repoUrl) {
+          <dt>repo</dt>
+          <dd>
+            <a [href]="p.repoUrl" target="_blank" rel="noopener">{{ p.repoUrl }}</a>
+          </dd>
+        }
+        @if (p.demoUrl) {
+          <dt>demo</dt>
+          <dd>
+            <a [href]="p.demoUrl" target="_blank" rel="noopener">{{ p.demoUrl }}</a>
+          </dd>
+        }
+      </dl>
+
+      @if (p.repoUrl) {
+        <h2>README.md</h2>
+        @if (readme.isLoading()) {
+          <p class="meta">fetching README.md from GitHub…</p>
+        } @else if (readme.error()) {
+          <p class="meta">{{ readmeFailed }}</p>
+        } @else {
+          <div class="readme">
+            @for (line of readmeLines(); track $index) {
+              <app-output-line [line]="line" />
+            }
+          </div>
+        }
+      }
+    </article>
+  } @else if (slug() && !content.isLoading()) {
+    <p class="doc meta">projects/{{ slug() }}: No such file or directory</p>
   }
-</section>
+</div>
