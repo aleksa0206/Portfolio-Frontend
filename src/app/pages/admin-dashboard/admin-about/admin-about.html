@@ -111,6 +111,22 @@
         </select>
       </div>
 
+      <h3>Idle easter egg</h3>
+      <p class="hint">
+        After this much inactivity the site turns red, the terminal shows the visitor's IP and
+        clicks are blocked for a few seconds. Texts are in Site texts below.
+      </p>
+      <div class="form-group">
+        <label for="prank-minutes">Trigger after</label>
+        <select id="prank-minutes" [formControl]="textControl('prank.minutes')">
+          <option value="">default: 5 minutes</option>
+          @for (m of prankMinutes; track m) {
+            <option [value]="'' + m">{{ m }} {{ m === 1 ? 'minute' : 'minutes' }}</option>
+          }
+          <option value="0">never (off)</option>
+        </select>
+      </div>
+
       <h3>Site texts</h3>
       <p class="hint">
         Leave a field empty to keep the default shown in it. Put commands in `backticks` to

@@ -18,6 +18,18 @@
   --gap: 10px;
 }
 
+/* Idle easter egg (idle-prank.ts): everything turns red for a few seconds */
+:root[data-evil] {
+  --color-surface: #170c0c;
+  --color-surface-2: #1f1010;
+  --color-line: #4a1d1d;
+  --color-ink: #f0d0d0;
+  --color-muted: #a06a6a;
+  --color-accent: #ff4545;
+  --color-teal: #e05a5a;
+  --color-blue: #e07a7a;
+}
+
 * {
   box-sizing: border-box;
 }

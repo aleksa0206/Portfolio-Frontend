@@ -8,6 +8,7 @@ import { PROFILE } from './core/constants/profile';
 import { TerminalComponent } from './terminal/terminal';
 import { MatrixRain } from './matrix-rain';
 import { ConsentDialog } from './consent-dialog';
+import { IdlePrank, IdlePrankHost } from './idle-prank';
 import { slugify } from './terminal/portfolio-fs';
 
 // Public routes, shown as workspaces in the top panel and as files in the sidebar
@@ -33,7 +34,7 @@ const formatClock = () =>
     .replace(',', '');
 
 @Component({
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, TerminalComponent, MatrixRain, ConsentDialog],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, TerminalComponent, MatrixRain, ConsentDialog, IdlePrankHost],
   selector: 'app-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',
@@ -75,6 +76,11 @@ export class App {
     effect(() => {
       this.url();
       untracked(() => this.sidebarOpen.set(false));
+    });
+    // The idle easter egg prints into the terminal, so make sure it is visible
+    const prank = inject(IdlePrank);
+    effect(() => {
+      if (prank.state() === 'evil') untracked(() => this.terminalState.update((s) => (s === 'closed' ? 'open' : s)));
     });
     // Tab icon uploaded in the admin panel replaces the static favicon.svg
     effect(() => {

@@ -46,7 +46,6 @@ export class MatrixRain {
 
     const css = getComputedStyle(document.documentElement);
     const bg = css.getPropertyValue('--color-bg').trim();
-    const green = css.getPropertyValue('--color-accent').trim();
     let drops: number[] = [];
 
     const resize = () => {
@@ -67,7 +66,7 @@ export class MatrixRain {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.font = `${SIZE - 2}px 'JetBrains Mono', monospace`;
-      ctx.fillStyle = green;
+      ctx.fillStyle = css.getPropertyValue('--color-accent'); // read per frame so a theme switch recolors the rain
       drops.forEach((y, i) => {
         ctx.globalAlpha = Math.random() < 0.03 ? 0.9 : 0.4;
         ctx.fillText(GLYPHS[Math.floor(Math.random() * GLYPHS.length)], i * SIZE, y * SIZE);

@@ -17,6 +17,10 @@ import { COMMAND_NAMES } from '../../../terminal/commands';
 // Longest side in px. Images are stored inline in the DB, so keep them small.
 const IMAGE_SIZE = { faviconUrl: 64 };
 
+// Site texts edited with a select instead of a textarea
+const SELECT_TEXTS = ['consent.repeat', 'prank.minutes'];
+const PRANK_MINUTES = [1, 3, 5, 10, 15];
+
 // Blocks saving a site text whose `backticked` command the terminal doesn't have
 const knownCommands: ValidatorFn = (c) => {
   const bad = unknownCommands(c.value ?? '', COMMAND_NAMES);
@@ -53,10 +57,11 @@ export class AdminAbout implements OnInit {
   });
   // contact notes sit next to their contact field and the popup repeat is a select, not in this list
   siteTexts = Object.entries(SITE_TEXTS)
-    .filter(([key]) => !key.startsWith('contact.note.') && key !== 'consent.repeat')
+    .filter(([key]) => !key.startsWith('contact.note.') && !SELECT_TEXTS.includes(key))
     .map(([key, t]) => ({ key, ...t }));
   github = PROFILE.github; // placeholder: used while the GitHub URL field is empty
   consentRepeat = Object.entries(CONSENT_REPEAT);
+  prankMinutes = PRANK_MINUTES;
   formValue = toSignal(this.aboutForm.valueChanges, { initialValue: this.aboutForm.value });
 
   ngOnInit() {

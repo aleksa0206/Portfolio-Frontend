@@ -4,8 +4,10 @@ import {
   Injector,
   afterNextRender,
   computed,
+  effect,
   inject,
   signal,
+  untracked,
   viewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
@@ -19,6 +21,21 @@ import { complete } from './complete';
 import { PortfolioData, buildFs } from './portfolio-fs';
 import { HOME, displayPath } from './vfs';
 import { OutputLine } from './output-line';
+import { IdlePrank } from '../idle-prank';
+
+// Printed by the idle easter egg (idle-prank.ts)
+const EVIL_FACE = String.raw`
+      .-"""""""""""-.
+    .'  \\       //  '.
+   /    (o)     (o)    \
+  :                     :
+  |   \             /   |
+  :    \___________/    :
+   \     \_/\_/\_/     /
+    '.               .'
+      '-._________.-'`
+  .slice(1)
+  .split('\n');
 
 interface Entry {
   prompt?: string;
@@ -82,6 +99,27 @@ export class TerminalComponent {
     // Autofocus only with a real pointer, so phones don't pop the keyboard on load.
     afterNextRender(() => {
       if (matchMedia('(pointer: fine)').matches) this.focus();
+    });
+
+    const prank = inject(IdlePrank);
+    effect(() => {
+      const state = prank.state();
+      if (state === 'off') return;
+      untracked(() => {
+        const out: Line[] =
+          state === 'evil'
+            ? [
+                [],
+                ...EVIL_FACE.map((l): Line => [{ text: l, tone: 'error' }]),
+                [],
+                [{ text: prank.ip() ? `I see you, ${prank.ip()}` : 'I see you.', tone: 'error' }],
+                ...textLines(this.content.text('prank.message')),
+                [],
+              ]
+            : [...textLines(this.content.text('prank.kidding')), []];
+        this.entries.update((e) => [...e, { out }]);
+        this.scrollToEnd();
+      });
     });
   }
 
