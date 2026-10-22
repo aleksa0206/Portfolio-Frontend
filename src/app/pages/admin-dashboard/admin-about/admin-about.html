@@ -29,6 +29,9 @@
         <label for="photo">Profile photo (optional)</label>
         @if (formValue().photoUrl; as src) {
           <img class="preview" [src]="src" alt="Current profile photo" width="64" height="64" />
+          <button type="button" class="small remove" (click)="aboutForm.patchValue({ photoUrl: '' })">
+            Remove photo
+          </button>
         }
         <input id="photo" type="file" accept="image/*" (change)="onImage($event, 'photoUrl')" />
       </div>
@@ -37,6 +40,9 @@
         <label for="favicon">Browser tab icon (optional)</label>
         @if (formValue().faviconUrl; as src) {
           <img class="preview" [src]="src" alt="Current tab icon" width="32" height="32" />
+          <button type="button" class="small remove" (click)="aboutForm.patchValue({ faviconUrl: '' })">
+            Use default icon
+          </button>
         }
         <input id="favicon" type="file" accept="image/*" (change)="onImage($event, 'faviconUrl')" />
       </div>
