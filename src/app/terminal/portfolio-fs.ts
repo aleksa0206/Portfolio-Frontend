@@ -1,4 +1,5 @@
 // Builds the virtual filesystem from real portfolio data (the same API data the pages use).
+import { SITE_TEXTS } from '../core/constants/site-texts';
 import { About } from '../core/models/about.model';
 import { Education } from '../core/models/education.model';
 import { License } from '../core/models/license.model';
@@ -64,12 +65,15 @@ function aboutMd(d: PortfolioData): string {
   return `# ${d.about.fullName}\n${tagline}${d.about.title} · ${d.location}\n\n${d.about.bio}\n\nMore: cat contact.txt, cd projects`;
 }
 
-function skillsMd(projects: Project[]): string {
-  const skills = skillsByTech(projects);
-  if (!skills.length) return '# skills\n\nNo projects listed yet.';
+function skillsMd(d: PortfolioData): string {
+  // heading and intro are admin site texts, the list comes from the projects
+  const text = (key: 'skills.heading' | 'skills.intro') =>
+    d.about?.texts?.[key]?.trim() || SITE_TEXTS[key].default;
+  const skills = skillsByTech(d.projects);
+  if (!skills.length) return `# ${text('skills.heading')}\n\nNo projects listed yet.`;
   const width = Math.max(...skills.map(([t]) => t.length)) + 2;
   const rows = skills.map(([tech, used]) => `- ${tech.padEnd(width)}${used.join(', ')}`);
-  return `# skills\n\nTechnologies used in the projects under ~/projects.\nNot a self-rating, just what the code is actually written in.\n\n${rows.join('\n')}`;
+  return `# ${text('skills.heading')}\n\n${text('skills.intro')}\n\n${rows.join('\n')}`;
 }
 
 function educationMd(list: Education[], heading = 'education'): string {
@@ -161,7 +165,7 @@ export function buildFs(d: PortfolioData): VDir {
   const home = dir('aleksa', [
     file('README.md', SITE_README, { route: '/readme' }),
     file('about.md', aboutMd(d), { route: '/' }),
-    file('skills.md', skillsMd(d.projects), { route: '/skills' }),
+    file('skills.md', skillsMd(d), { route: '/skills' }),
     file('education.md', educationMd(d.education, d.about?.texts?.['education.heading']?.trim() || undefined), {
       route: '/education',
     }),

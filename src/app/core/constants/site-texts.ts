@@ -8,6 +8,12 @@ export const SITE_TEXTS = {
   },
   'home.next.heading': { label: 'Home: links heading', default: 'where to next' },
   'education.heading': { label: 'Education: page heading', default: 'education' },
+  'skills.heading': { label: 'Skills: page heading', default: 'skills' },
+  'skills.intro': {
+    label: "Skills: text above the list (the list itself comes from the projects' tech stacks)",
+    default:
+      'Technologies used in the projects under ~/projects.\nNot a self-rating, just what the code is actually written in.',
+  },
   'certificates.heading': { label: 'Certificates: page heading', default: 'certificates' },
   'certificates.empty': {
     label: 'Certificates: text when there are none',

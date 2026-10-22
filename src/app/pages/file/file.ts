@@ -10,11 +10,8 @@ import { skillsByTech } from '../../terminal/portfolio-fs';
   template: `
     <article class="doc">
       @if (file === 'skills.md') {
-        <h1>skills</h1>
-        <p>
-          Technologies used in the projects under ~/projects.<br />
-          Not a self-rating, just what the code is actually written in.
-        </p>
+        <h1>{{ content.text('skills.heading') }}</h1>
+        <p class="text">{{ content.text('skills.intro') }}</p>
         <dl class="kv">
           @for (s of skills(); track s[0]) {
             <dt>{{ s[0] }}</dt>
@@ -45,7 +42,7 @@ import { skillsByTech } from '../../terminal/portfolio-fs';
   `,
 })
 export class FileComponent {
-  private content = inject(ContentService);
+  protected content = inject(ContentService);
   protected file = inject(ActivatedRoute).snapshot.data['file'] as 'skills.md' | 'README.md';
 
   skills = computed(() => skillsByTech(this.content.projects()));
