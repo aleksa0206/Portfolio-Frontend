@@ -98,7 +98,7 @@ export class AdminAbout implements OnInit {
     return this.aboutForm.controls.texts.get([key]) as FormControl<string>;
   }
 
-  note(key: 'email' | 'github' | 'linkedin' | 'location') {
+  note(key: 'email' | 'phone' | 'github' | 'linkedin' | 'location') {
     return this.textControl(`contact.note.${key}`);
   }
 

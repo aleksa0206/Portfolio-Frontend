@@ -92,7 +92,7 @@ function contactTxt(d: PortfolioData): string {
   };
   return `${table([
     ['email', withNote('email', d.about?.email)],
-    ['phone', d.about?.phone],
+    ['phone', withNote('phone', d.about?.phone)],
     ['github', withNote('github', d.github)],
     ['linkedin', withNote('linkedin', d.about?.linkedinUrl)],
     ...(d.about?.contactLinks ?? []).map((l): [string, string] => [l.label, l.value]),

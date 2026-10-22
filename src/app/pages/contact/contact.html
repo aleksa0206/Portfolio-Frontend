@@ -8,6 +8,13 @@
         <span class="note">{{ content.text('contact.note.email') }}</span>
       </dd>
     }
+    @if (content.about()?.phone; as phone) {
+      <dt>phone</dt>
+      <dd>
+        <a [href]="'tel:' + phone.replaceAll(' ', '')">{{ phone }}</a>
+        <span class="note">{{ content.text('contact.note.phone') }}</span>
+      </dd>
+    }
     <dt>github</dt>
     <dd>
       <a [href]="content.github()" target="_blank" rel="noopener">{{ content.github() }}</a>

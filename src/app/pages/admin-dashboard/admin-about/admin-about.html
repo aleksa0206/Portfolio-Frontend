@@ -49,7 +49,10 @@
 
       <div class="form-group">
         <label for="phone">Phone</label>
-        <input id="phone" type="text" formControlName="phone" />
+        <div class="with-note">
+          <input id="phone" type="tel" formControlName="phone" />
+          <input type="text" [formControl]="note('phone')" placeholder="note (optional)" aria-label="Phone note" />
+        </div>
       </div>
 
       <div class="form-group">
