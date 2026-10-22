@@ -306,7 +306,7 @@ function neofetch(_: string[], sh: Shell): Line[] {
   ]);
 }
 
-function hire(sh: Shell): Line[] {
+function contactScript(sh: Shell): Line[] {
   const contact = lookup(sh.root, `${HOME}/contact.txt`);
   sh.open('/contact');
   return [
@@ -316,13 +316,13 @@ function hire(sh: Shell): Line[] {
   ];
 }
 
-// Paths like ./hire-aleksa.sh or ~/hire-aleksa.sh
+// Paths like ./contact-aleksa.sh or ~/contact-aleksa.sh
 function runPath(path: string, sh: Shell): Line[] {
   const node = at(sh, path);
   if (!node) return err(`portfolio-sh: ${path}: No such file or directory`);
   if (node.type === 'dir') return err(`portfolio-sh: ${path}: Is a directory`);
   if (!node.executable) return err(`portfolio-sh: ${path}: Permission denied`);
-  return hire(sh);
+  return contactScript(sh);
 }
 
 const COMMANDS = {
@@ -335,7 +335,7 @@ const COMMANDS = {
         seg('  ' + name.padEnd(11), 'accent'),
         seg(c.summary),
       ]),
-      [seg('  ' + './hire-aleksa.sh'.padEnd(11), 'exec'), seg('  you know what this does')],
+      [seg('  ' + './contact-aleksa.sh'.padEnd(11), 'exec'), seg('  get in touch')],
       [],
       line('Try:'),
       ...['ls -la', 'cd projects', 'cat about.md', 'tree', 'find . -name "*.md"'].map((ex) => [

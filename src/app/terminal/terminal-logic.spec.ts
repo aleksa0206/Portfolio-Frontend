@@ -141,10 +141,10 @@ describe('commands', () => {
     expect(out).not.toContain('Python');
   });
 
-  it('open and the hire script navigate', async () => {
+  it('open and the contact script navigate', async () => {
     const { sh, opened } = shell();
     await execute('open projects/TaskMaster', sh);
-    await execute('./hire-aleksa.sh', sh);
+    await execute('./contact-aleksa.sh', sh);
     expect(opened).toEqual(['/projects/TaskMaster', '/contact']);
   });
 
@@ -163,7 +163,7 @@ describe('complete', () => {
     expect(complete('cat projects/T', root, HOME, COMMAND_NAMES).value).toBe(
       'cat projects/TaskMaster/',
     );
-    expect(complete('./hi', root, HOME, COMMAND_NAMES).value).toBe('./hire-aleksa.sh ');
+    expect(complete('./co', root, HOME, COMMAND_NAMES).value).toBe('./contact-aleksa.sh ');
   });
   it('lists options when ambiguous', () => {
     const result = complete('cat ~/projects/TaskMaster/', root, HOME, COMMAND_NAMES);

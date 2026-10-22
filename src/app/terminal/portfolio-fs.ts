@@ -142,8 +142,8 @@ Start with:
   cd projects      what I've built
   help             every command`;
 
-export const HIRE_SCRIPT = `#!/usr/bin/env bash
-# Usage: ./hire-aleksa.sh
+export const CONTACT_SCRIPT = `#!/usr/bin/env bash
+# Usage: ./contact-aleksa.sh
 set -euo pipefail
 
 cat ~/contact.txt
@@ -176,7 +176,7 @@ export function buildFs(d: PortfolioData): VDir {
       route: '/education',
     }),
     file('contact.txt', contactTxt(d), { route: '/contact' }),
-    file('hire-aleksa.sh', HIRE_SCRIPT, { executable: true, route: '/contact' }),
+    file('contact-aleksa.sh', CONTACT_SCRIPT, { executable: true, route: '/contact' }),
     dir('projects', projects, '/projects'),
     dir('certificates', certificates, '/licenses'),
   ]);
