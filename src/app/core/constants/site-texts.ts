@@ -24,6 +24,18 @@ export const SITE_TEXTS = {
     label: 'Terminal hint (under the welcome)',
     default: 'Type `help` for commands, or start with `ls`.',
   },
+  // Joke "agreement" popup on the first visit
+  'consent.question': {
+    label: 'Popup: question',
+    default:
+      "Do you agree not to do anything stupid on this site?\n(And no, this isn't consent to any cookies.)",
+  },
+  'consent.agree': { label: 'Popup: agree button', default: 'I agree' },
+  'consent.disagree': { label: "Popup: disagree button (the one that runs away)", default: "I don't agree" },
+  'consent.after': {
+    label: 'Popup: message after agreeing',
+    default: "Great. Now just click the X, I'm not standing here for nothing.",
+  },
   // Optional notes shown to the right of a contact row
   'contact.note.email': { label: 'Contact: note next to email', default: '' },
   'contact.note.github': { label: 'Contact: note next to github', default: '' },

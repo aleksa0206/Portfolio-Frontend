@@ -7,6 +7,7 @@ import { ContentService } from './core/services/content.service';
 import { PROFILE } from './core/constants/profile';
 import { TerminalComponent } from './terminal/terminal';
 import { MatrixRain } from './matrix-rain';
+import { ConsentDialog } from './consent-dialog';
 import { slugify } from './terminal/portfolio-fs';
 
 // Public routes, shown as workspaces in the top panel and as files in the sidebar
@@ -32,7 +33,7 @@ const formatClock = () =>
     .replace(',', '');
 
 @Component({
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, TerminalComponent, MatrixRain],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, TerminalComponent, MatrixRain, ConsentDialog],
   selector: 'app-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',
