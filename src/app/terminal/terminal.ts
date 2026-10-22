@@ -21,7 +21,7 @@ import { complete } from './complete';
 import { PortfolioData, buildFs } from './portfolio-fs';
 import { HOME, displayPath } from './vfs';
 import { OutputLine } from './output-line';
-import { IdlePrank } from '../idle-prank';
+import { IdlePrank, isMalicious } from '../idle-prank';
 
 // Printed by the idle easter egg (idle-prank.ts)
 const EVIL_FACE = String.raw`
@@ -62,6 +62,7 @@ export class TerminalComponent {
   private readmeService = inject(ReadmeService);
   private router = inject(Router);
   private injector = inject(Injector);
+  private prank = inject(IdlePrank);
 
   private inputRef = viewChild.required<ElementRef<HTMLInputElement>>('input');
   private screenRef = viewChild.required<ElementRef<HTMLElement>>('screen');
@@ -101,7 +102,7 @@ export class TerminalComponent {
       if (matchMedia('(pointer: fine)').matches) this.focus();
     });
 
-    const prank = inject(IdlePrank);
+    const prank = this.prank;
     effect(() => {
       const state = prank.state();
       if (state === 'off') return;
@@ -113,7 +114,9 @@ export class TerminalComponent {
                 ...EVIL_FACE.map((l): Line => [{ text: l, tone: 'error' }]),
                 [],
                 [{ text: prank.ip() ? `I see you, ${prank.ip()}` : 'I see you.', tone: 'error' }],
-                ...textLines(this.content.text('prank.message')),
+                ...textLines(
+                  this.content.text(prank.reason() === 'malicious' ? 'prank.malicious' : 'prank.message'),
+                ),
                 [],
               ]
             : [...textLines(this.content.text('prank.kidding')), []];
@@ -195,6 +198,11 @@ export class TerminalComponent {
     this.historyIndex = this.history.length;
     this.entries.update((e) => [...e, entry]);
     this.scrollToEnd();
+
+    if (isMalicious(command)) {
+      this.prank.trigger('malicious');
+      return;
+    }
 
     let cleared = false;
     this.busy.set(true);

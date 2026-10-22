@@ -44,6 +44,10 @@ export const SITE_TEXTS = {
     label: 'Easter egg: message under the IP',
     default: "Didn't anyone teach you not to click on everything you see on the internet?",
   },
+  'prank.malicious': {
+    label: 'Easter egg: message after a dangerous command (rm -rf, sudo, ...)',
+    default: "We had a deal. You agreed not to do anything stupid.",
+  },
   'prank.kidding': {
     label: 'Easter egg: message when it lets go',
     default: '...just kidding :) Press any key or click to continue.',
