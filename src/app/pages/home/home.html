@@ -6,10 +6,10 @@
       }
       <div>
         <h1>{{ about.fullName }}</h1>
-        <p class="meta">{{ about.title }} · {{ content.location() }}</p>
         @if (about.tagline) {
           <p class="text tagline">{{ about.tagline }}</p>
         }
+        <p class="meta">{{ about.title }} · {{ content.location() }}</p>
       </div>
     </header>
 

@@ -60,8 +60,8 @@ const table = (rows: [string, string | undefined][]) => {
 
 function aboutMd(d: PortfolioData): string {
   if (!d.about) return '# about\n\nNothing here yet.';
-  const tagline = d.about.tagline ? `\n${d.about.tagline}` : '';
-  return `# ${d.about.fullName}\n${d.about.title} · ${d.location}${tagline}\n\n${d.about.bio}\n\nMore: cat contact.txt, cd projects`;
+  const tagline = d.about.tagline ? `${d.about.tagline}\n` : '';
+  return `# ${d.about.fullName}\n${tagline}${d.about.title} · ${d.location}\n\n${d.about.bio}\n\nMore: cat contact.txt, cd projects`;
 }
 
 function skillsMd(projects: Project[]): string {
