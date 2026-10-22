@@ -10,11 +10,19 @@ import { SITE_README, skillsMd } from '../../terminal/portfolio-fs';
   imports: [OutputLine],
   selector: 'app-file',
   template: `
-    <article class="doc">
+    <article class="doc file">
       @for (line of lines(); track $index) {
         <app-output-line [line]="line" />
       }
     </article>
+  `,
+  // monospace like the terminal, so the padded columns line up
+  styles: `
+    .file {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
   `,
 })
 export class FileComponent {
