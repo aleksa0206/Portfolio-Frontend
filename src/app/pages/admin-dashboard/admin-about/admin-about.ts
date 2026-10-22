@@ -11,7 +11,7 @@ import {
 import { PROFILE } from '../../../core/constants/profile';
 import { AboutService } from '../../../core/services/about.service';
 import { MessageKey, Messages } from '../../../core/constants/messages';
-import { SITE_TEXTS, unknownCommands } from '../../../core/constants/site-texts';
+import { CONSENT_REPEAT, SITE_TEXTS, unknownCommands } from '../../../core/constants/site-texts';
 import { COMMAND_NAMES } from '../../../terminal/commands';
 
 // Longest side in px. Images are stored inline in the DB, so keep them small.
@@ -51,11 +51,12 @@ export class AdminAbout implements OnInit {
     contactLinks: this.fb.array<FormGroup>([]),
     texts: this.fb.group(Object.fromEntries(Object.keys(SITE_TEXTS).map((k) => [k, ['', knownCommands]]))),
   });
-  // contact notes are edited next to their contact field instead of in the Site texts list
+  // contact notes sit next to their contact field and the popup repeat is a select, not in this list
   siteTexts = Object.entries(SITE_TEXTS)
-    .filter(([key]) => !key.startsWith('contact.note.'))
+    .filter(([key]) => !key.startsWith('contact.note.') && key !== 'consent.repeat')
     .map(([key, t]) => ({ key, ...t }));
   github = PROFILE.github; // placeholder: used while the GitHub URL field is empty
+  consentRepeat = Object.entries(CONSENT_REPEAT);
   formValue = toSignal(this.aboutForm.valueChanges, { initialValue: this.aboutForm.value });
 
   ngOnInit() {
@@ -95,9 +96,13 @@ export class AdminAbout implements OnInit {
     );
   }
 
-  note(key: 'email' | 'github' | 'linkedin' | 'location') {
+  textControl(key: string) {
     // array path: a string path would split the dotted key
-    return this.aboutForm.controls.texts.get([`contact.note.${key}`]) as FormControl<string>;
+    return this.aboutForm.controls.texts.get([key]) as FormControl<string>;
+  }
+
+  note(key: 'email' | 'github' | 'linkedin' | 'location') {
+    return this.textControl(`contact.note.${key}`);
   }
 
   removeContactLink(i: number) {

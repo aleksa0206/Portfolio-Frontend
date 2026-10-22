@@ -100,6 +100,17 @@
       </div>
       <button type="button" class="small add-row" (click)="addContactLink()">+ Add contact</button>
 
+      <h3>Popup</h3>
+      <div class="form-group">
+        <label for="consent-repeat">Show the "don't do anything stupid" popup</label>
+        <select id="consent-repeat" [formControl]="textControl('consent.repeat')">
+          <option value="">default: {{ consentRepeat[0][1] }}</option>
+          @for (opt of consentRepeat; track opt[0]) {
+            <option [value]="opt[0]">{{ opt[1] }}</option>
+          }
+        </select>
+      </div>
+
       <h3>Site texts</h3>
       <p class="hint">
         Leave a field empty to keep the default shown in it. Put commands in `backticks` to

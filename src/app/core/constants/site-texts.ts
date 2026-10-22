@@ -36,6 +36,8 @@ export const SITE_TEXTS = {
     label: 'Popup: message after agreeing',
     default: "Great. Now just click the X, I'm not standing here for nothing.",
   },
+  // How often the popup comes back; edited with a select in the admin, not as free text
+  'consent.repeat': { label: 'Popup: show it', default: 'visit' satisfies ConsentRepeat },
   // Optional notes shown to the right of a contact row
   'contact.note.email': { label: 'Contact: note next to email', default: '' },
   'contact.note.github': { label: 'Contact: note next to github', default: '' },
@@ -60,3 +62,13 @@ export function unknownCommands(text: string, commands: readonly string[]): stri
     .map((p) => p.text.trim().split(/\s+/)[0])
     .filter((name) => !name.includes('/') && !commands.includes(name));
 }
+
+export const CONSENT_REPEAT = {
+  visit: 'every time the site is opened (not on refresh)',
+  day: 'once a day',
+  week: 'once a week',
+  once: 'only the first time',
+  off: 'never (popup off)',
+} as const;
+
+export type ConsentRepeat = keyof typeof CONSENT_REPEAT;

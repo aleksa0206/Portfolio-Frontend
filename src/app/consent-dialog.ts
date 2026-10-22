@@ -9,18 +9,30 @@ import {
 } from '@angular/core';
 import { ContentService } from './core/services/content.service';
 
-const SEEN_KEY = 'consent-seen';
+const SEEN_KEY = 'consent-seen'; // sessionStorage: this tab already closed it
+const CLOSED_AT_KEY = 'consent-closed-at'; // localStorage: when this browser last closed it
+const DAY_MS = 24 * 60 * 60 * 1000;
 
-function seen(): boolean {
+// Storage can throw (blocked site data); then the popup just shows again
+function read(storage: () => Storage, key: string): string | null {
   try {
-    return sessionStorage.getItem(SEEN_KEY) === '1';
+    return storage().getItem(key);
   } catch {
-    return false;
+    return null;
   }
 }
 
-// Joke "do you agree not to do anything stupid" popup, shown each time the site is opened
-// (sessionStorage: survives a refresh, gone when the tab is closed).
+export function shouldShow(repeat: string): boolean {
+  if (repeat === 'off' || read(() => sessionStorage, SEEN_KEY)) return false;
+  const closedAt = Number(read(() => localStorage, CLOSED_AT_KEY)) || 0;
+  if (repeat === 'once') return !closedAt;
+  if (repeat === 'day') return Date.now() - closedAt > DAY_MS;
+  if (repeat === 'week') return Date.now() - closedAt > 7 * DAY_MS;
+  return true; // 'visit'
+}
+
+// Joke "do you agree not to do anything stupid" popup. How often it returns is set in the admin
+// (site text `consent.repeat`); it never comes back on a refresh of the same tab.
 // "I don't agree" disappears as soon as the visitor tries to reach it.
 @Component({
   selector: 'app-consent-dialog',
@@ -115,7 +127,7 @@ export class ConsentDialog {
   constructor() {
     // Open once content (and any admin-edited text) has loaded, so the text doesn't swap mid-read
     afterRenderEffect(() => {
-      if (this.content.isLoading() || seen()) return;
+      if (this.content.isLoading() || !shouldShow(this.content.text('consent.repeat'))) return;
       untracked(() => {
         const dialog = this.dialogRef().nativeElement;
         if (!dialog.open) dialog.showModal();
@@ -138,6 +150,7 @@ export class ConsentDialog {
   close() {
     try {
       sessionStorage.setItem(SEEN_KEY, '1');
+      localStorage.setItem(CLOSED_AT_KEY, String(Date.now()));
     } catch {
       // storage blocked: the popup just shows again on refresh
     }
