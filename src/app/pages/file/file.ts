@@ -1,35 +1,52 @@
 import { Component, computed, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ContentService } from '../../core/services/content.service';
-import { textLines } from '../../terminal/commands';
-import { OutputLine } from '../../terminal/output-line';
-import { SITE_README, skillsMd } from '../../terminal/portfolio-fs';
+import { skillsByTech } from '../../terminal/portfolio-fs';
 
-// Plain-text files from the terminal FS (skills.md, README.md) shown in the view window
+// skills.md and README.md in the view window, laid out like the other pages (.doc, .kv).
+// Same content as the terminal versions in portfolio-fs.ts (skillsMd, SITE_README).
 @Component({
-  imports: [OutputLine],
   selector: 'app-file',
   template: `
-    <article class="doc file">
-      @for (line of lines(); track $index) {
-        <app-output-line [line]="line" />
+    <article class="doc">
+      @if (file === 'skills.md') {
+        <h1>skills</h1>
+        <p>
+          Technologies used in the projects under ~/projects.<br />
+          Not a self-rating, just what the code is actually written in.
+        </p>
+        <dl class="kv">
+          @for (s of skills(); track s[0]) {
+            <dt>{{ s[0] }}</dt>
+            <dd>{{ s[1].join(', ') }}</dd>
+          } @empty {
+            <p class="meta">No projects listed yet.</p>
+          }
+        </dl>
+      } @else {
+        <h1>aleksa@portfolio</h1>
+        <p>
+          My portfolio, presented as a small Linux-style shell. The files here are a virtual
+          filesystem built from the same data as the rest of the site. Nothing runs on a server.
+        </p>
+        <p>Start with:</p>
+        <dl class="kv">
+          <dt><code>ls</code></dt>
+          <dd>list files</dd>
+          <dt><code>cat about.md</code></dt>
+          <dd>who I am</dd>
+          <dt><code>cd projects</code></dt>
+          <dd>what I've built</dd>
+          <dt><code>help</code></dt>
+          <dd>every command</dd>
+        </dl>
       }
     </article>
-  `,
-  // monospace like the terminal, so the padded columns line up
-  styles: `
-    .file {
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      line-height: 1.55;
-    }
   `,
 })
 export class FileComponent {
   private content = inject(ContentService);
-  private file = inject(ActivatedRoute).snapshot.data['file'] as 'skills.md' | 'README.md';
+  protected file = inject(ActivatedRoute).snapshot.data['file'] as 'skills.md' | 'README.md';
 
-  lines = computed(() =>
-    textLines(this.file === 'skills.md' ? skillsMd(this.content.projects()) : SITE_README),
-  );
+  skills = computed(() => skillsByTech(this.content.projects()));
 }

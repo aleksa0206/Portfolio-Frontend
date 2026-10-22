@@ -64,7 +64,7 @@ function aboutMd(d: PortfolioData): string {
   return `# ${d.about.fullName}\n${tagline}${d.about.title} · ${d.location}\n\n${d.about.bio}\n\nMore: cat contact.txt, cd projects`;
 }
 
-export function skillsMd(projects: Project[]): string {
+function skillsMd(projects: Project[]): string {
   const skills = skillsByTech(projects);
   if (!skills.length) return '# skills\n\nNo projects listed yet.';
   const width = Math.max(...skills.map(([t]) => t.length)) + 2;
@@ -120,7 +120,7 @@ function licenseTxt(l: License): string {
   ]);
 }
 
-export const SITE_README = `# aleksa@portfolio
+const SITE_README = `# aleksa@portfolio
 
 My portfolio, presented as a small Linux-style shell.
 The files here are a virtual filesystem built from the same data as the rest
