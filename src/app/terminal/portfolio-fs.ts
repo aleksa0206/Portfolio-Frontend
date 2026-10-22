@@ -89,6 +89,7 @@ function contactTxt(d: PortfolioData): string {
     ['email', d.about?.email],
     ['phone', d.about?.phone],
     ['github', PROFILE.github],
+    ['linkedin', d.about?.linkedinUrl],
     ['location', d.location],
   ])}\n\nPrefer a form? Run: open contact.txt`;
 }

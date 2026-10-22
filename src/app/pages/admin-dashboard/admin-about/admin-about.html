@@ -56,6 +56,19 @@
         <input id="location" type="text" formControlName="location" />
       </div>
 
+      <div class="form-group">
+        <label for="linkedinUrl">LinkedIn URL (optional)</label>
+        <input
+          id="linkedinUrl"
+          type="url"
+          formControlName="linkedinUrl"
+          placeholder="https://www.linkedin.com/in/username"
+        />
+        @if (aboutForm.get('linkedinUrl')?.invalid) {
+          <p class="field-error">Use a full link starting with https://</p>
+        }
+      </div>
+
       <h3>Site texts</h3>
       <p class="hint">
         Leave a field empty to keep the default shown in it. Put commands in `backticks` to

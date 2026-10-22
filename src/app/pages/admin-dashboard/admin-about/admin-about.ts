@@ -39,6 +39,7 @@ export class AdminAbout implements OnInit {
     email: [''],
     phone: [''],
     location: [''],
+    linkedinUrl: ['', Validators.pattern(/^https:\/\/\S+$/)],
     texts: this.fb.group(Object.fromEntries(Object.keys(SITE_TEXTS).map((k) => [k, ['', knownCommands]]))),
   });
   siteTexts = Object.entries(SITE_TEXTS).map(([key, t]) => ({ key, ...t }));
@@ -58,6 +59,7 @@ export class AdminAbout implements OnInit {
             email: data.email ?? '',
             phone: data.phone ?? '',
             location: data.location ?? '',
+            linkedinUrl: data.linkedinUrl ?? '',
             texts: data.texts ?? {},
           });
         }

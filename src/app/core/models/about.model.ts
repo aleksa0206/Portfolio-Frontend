@@ -6,6 +6,7 @@ export interface About {
   photoUrl?: string;
   faviconUrl?: string;
   tagline?: string;
+  linkedinUrl?: string;
   texts?: Partial<Record<string, string>>;
   email?: string;
   phone?: string;
@@ -20,6 +21,7 @@ export interface AboutInput {
   photoUrl?: string;
   faviconUrl?: string;
   tagline?: string;
+  linkedinUrl?: string;
   texts?: Partial<Record<string, string>>;
   email?: string;
   phone?: string;

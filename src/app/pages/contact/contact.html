@@ -11,6 +11,12 @@
     <dd>
       <a [href]="github" target="_blank" rel="noopener">{{ github }}</a>
     </dd>
+    @if (content.about()?.linkedinUrl; as linkedin) {
+      <dt>linkedin</dt>
+      <dd>
+        <a [href]="linkedin" target="_blank" rel="noopener">{{ linkedin }}</a>
+      </dd>
+    }
     <dt>location</dt>
     <dd>{{ content.location() }}</dd>
   </dl>
