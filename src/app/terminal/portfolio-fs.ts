@@ -72,8 +72,8 @@ function skillsMd(projects: Project[]): string {
   return `# skills\n\nTechnologies used in the projects under ~/projects.\nNot a self-rating, just what the code is actually written in.\n\n${rows.join('\n')}`;
 }
 
-function educationMd(list: Education[]): string {
-  if (!list.length) return '# education\n\nNothing listed yet.';
+function educationMd(list: Education[], heading = 'education'): string {
+  if (!list.length) return `# ${heading}\n\nNothing listed yet.`;
   const entries = sortedEducation(list).map((e) =>
     [
       `## ${e.degree}${e.fieldOfStudy ? ', ' + e.fieldOfStudy : ''}`,
@@ -81,7 +81,7 @@ function educationMd(list: Education[]): string {
       e.description ? `\n${e.description}` : '',
     ].join('\n'),
   );
-  return `# education\n\n${entries.join('\n\n')}`;
+  return `# ${heading}\n\n${entries.join('\n\n')}`;
 }
 
 function contactTxt(d: PortfolioData): string {
@@ -162,7 +162,9 @@ export function buildFs(d: PortfolioData): VDir {
     file('README.md', SITE_README),
     file('about.md', aboutMd(d), { route: '/' }),
     file('skills.md', skillsMd(d.projects)),
-    file('education.md', educationMd(d.education), { route: '/education' }),
+    file('education.md', educationMd(d.education, d.about?.texts?.['education.heading']?.trim() || undefined), {
+      route: '/education',
+    }),
     file('contact.txt', contactTxt(d), { route: '/contact' }),
     file('hire-aleksa.sh', HIRE_SCRIPT, { executable: true, route: '/contact' }),
     dir('projects', projects, '/projects'),

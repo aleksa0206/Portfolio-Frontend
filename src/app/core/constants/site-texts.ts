@@ -7,6 +7,7 @@ export const SITE_TEXTS = {
     default: "Hi, I'm Aleksa. This is my portfolio, and it's a shell, so feel free to look around.",
   },
   'home.next.heading': { label: 'Home: links heading', default: 'where to next' },
+  'education.heading': { label: 'Education: page heading', default: 'education' },
   'home.next.projects': {
     label: 'Home: projects/ description',
     default: "things I've built, with their READMEs",
