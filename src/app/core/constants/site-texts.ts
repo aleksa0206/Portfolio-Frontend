@@ -67,6 +67,24 @@ export const SITE_TEXTS = {
     label: 'Easter egg: message when it lets go',
     default: '...just kidding :) Press any key or click to continue.',
   },
+  // The "important" file: two "are you curious?" popups, then the CV download
+  'important.q1': { label: 'Important file: first popup', default: "You're really curious, huh?" },
+  'important.yes1': { label: 'Important file: first popup, yes button', default: 'I am' },
+  'important.no': { label: 'Important file: no button', default: 'Not really' },
+  'important.nope': {
+    label: 'Important file: text after saying no',
+    default: 'Good. Nothing to see here.',
+  },
+  'important.q2': {
+    label: 'Important file: second popup',
+    default: "Are you sure you're THAT curious?",
+  },
+  'important.yes2': { label: 'Important file: second popup, yes button', default: "Yes, I'm sure" },
+  'important.reveal': {
+    label: 'Important file: text above the CV download',
+    default: "Well, since you're that curious...",
+  },
+  'important.download': { label: 'Important file: download button', default: 'Download my CV' },
   // Optional notes shown to the right of a contact row
   'contact.note.email': { label: 'Contact: note next to email', default: '' },
   'contact.note.phone': { label: 'Contact: note next to phone', default: '' },

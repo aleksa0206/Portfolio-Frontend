@@ -5,6 +5,7 @@ import { LicensesComponent } from './pages/licenses/licenses';
 import { ProjectsComponent } from './pages/projects/projects';
 import { ContactComponent } from './pages/contact/contact';
 import { FileComponent } from './pages/file/file';
+import { ImportantComponent } from './pages/important/important';
 import { AdminLogin } from './pages/admin-login/admin-login';
 import { AdminDashboard } from './pages/admin-dashboard/admin-dashboard';
 import { AdminEducation } from './pages/admin-dashboard/admin-education/admin-education';
@@ -23,6 +24,7 @@ export const routes: Routes = [
   { path: 'contact', component: ContactComponent },
   { path: 'skills', component: FileComponent, data: { file: 'skills.md' } },
   { path: 'readme', component: FileComponent, data: { file: 'README.md' } },
+  { path: 'important', component: ImportantComponent },
   { path: 'admin/login', component: AdminLogin },
   {
     path: 'admin/dashboard',

@@ -160,6 +160,23 @@
               <option value="0">never (off)</option>
             </select>
           </div>
+
+          <h3>Important file (CV)</h3>
+          <p class="hint">
+            The PDF visitors can download after saying twice that they are that curious. Uploads
+            right away, no need to press Save.
+          </p>
+          <div class="form-group">
+            <label for="cv">CV (PDF, up to 5 MB)</label>
+            @if (cv(); as current) {
+              <p class="hint">
+                Current: <a [href]="cvUrl" download>{{ current.filename }}</a>, uploaded
+                {{ current.updatedAt.slice(0, 10) }}
+              </p>
+              <button type="button" class="small remove" (click)="removeCv()">Remove CV</button>
+            }
+            <input id="cv" type="file" accept="application/pdf" (change)="onCv($event)" />
+          </div>
         }
       }
 

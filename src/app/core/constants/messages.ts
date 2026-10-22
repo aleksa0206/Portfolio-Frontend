@@ -21,6 +21,9 @@ export enum MessageKey {
   CONTACT_SEND_SUCCESS = 'CONTACT_SEND_SUCCESS',
   README_LOAD_FAILED = 'README_LOAD_FAILED',
   IMAGE_LOAD_FAILED = 'IMAGE_LOAD_FAILED',
+  CV_INVALID = 'CV_INVALID',
+  CV_UPLOAD_FAILED = 'CV_UPLOAD_FAILED',
+  CV_UPLOADED = 'CV_UPLOADED',
 }
 
 export const Messages: Record<MessageKey, string> = {
@@ -46,4 +49,7 @@ export const Messages: Record<MessageKey, string> = {
   [MessageKey.CONTACT_SEND_SUCCESS]: 'Your message has been sent successfully!',
   [MessageKey.README_LOAD_FAILED]: "Couldn't fetch README.md from GitHub right now.",
   [MessageKey.IMAGE_LOAD_FAILED]: "Couldn't read that image. Try a JPG, PNG or WebP file.",
+  [MessageKey.CV_INVALID]: 'Pick a PDF file up to 5 MB.',
+  [MessageKey.CV_UPLOAD_FAILED]: "Couldn't upload the CV. Please try again.",
+  [MessageKey.CV_UPLOADED]: 'CV uploaded.',
 };

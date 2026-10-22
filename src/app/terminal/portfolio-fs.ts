@@ -170,6 +170,9 @@ export function buildFs(d: PortfolioData): VDir {
 
   const home = dir('aleksa', [
     file('README.md', SITE_README, { route: '/readme' }),
+    file('important', 'Some things are better opened than read.\nRun: open important', {
+      route: '/important',
+    }),
     file('about.md', aboutMd(d), { route: '/' }),
     file('skills.md', skillsMd(d), { route: '/skills' }),
     file('education.md', educationMd(d.education, d.about?.texts?.['education.heading']?.trim() || undefined), {

@@ -11,6 +11,7 @@ import {
 import { PROFILE } from '../../../core/constants/profile';
 import { AboutService } from '../../../core/services/about.service';
 import { ProjectService } from '../../../core/services/project.service';
+import { CvInfo, CvService } from '../../../core/services/cv.service';
 import { Skill } from '../../../core/models/about.model';
 import { skillList } from '../../../terminal/portfolio-fs';
 import { MessageKey, Messages } from '../../../core/constants/messages';
@@ -39,7 +40,7 @@ function textSection(key: string): Section {
   if (key.startsWith('home.')) return 'profile';
   if (key.startsWith('contact.')) return 'contact';
   if (key.startsWith('skills.')) return 'skills';
-  if (key.startsWith('consent.') || key.startsWith('prank.')) return 'fun';
+  if (key.startsWith('consent.') || key.startsWith('prank.') || key.startsWith('important.')) return 'fun';
   return 'texts';
 }
 
@@ -53,8 +54,12 @@ export class AdminAbout implements OnInit {
   private fb = inject(FormBuilder);
   private aboutService = inject(AboutService);
   private projectService = inject(ProjectService);
+  private cvService = inject(CvService);
 
   isLoading = signal(true);
+  // CV behind the "important" file; uploaded on its own, not with Save
+  cv = signal<CvInfo | null>(null);
+  cvUrl = this.cvService.downloadUrl;
   successMessage = signal<string | null>(null);
   errorMessage = signal<string | null>(null);
 
@@ -86,6 +91,7 @@ export class AdminAbout implements OnInit {
   formValue = toSignal(this.aboutForm.valueChanges, { initialValue: this.aboutForm.value });
 
   ngOnInit() {
+    this.cvService.info().subscribe({ next: (info) => this.cv.set(info), error: () => this.cv.set(null) });
     this.aboutService.get().subscribe({
       next: (data) => {
         if (data) {
@@ -156,6 +162,38 @@ export class AdminAbout implements OnInit {
 
   removeSkill(i: number) {
     this.aboutForm.controls.skills.removeAt(i);
+  }
+
+  async onCv(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    this.successMessage.set(null);
+    this.errorMessage.set(null);
+    if (file.type !== 'application/pdf' || file.size > 5 * 1024 * 1024) {
+      this.errorMessage.set(Messages[MessageKey.CV_INVALID]);
+      input.value = '';
+      return;
+    }
+    // base64 of the raw bytes: drop the "data:application/pdf;base64," prefix
+    const dataUrl = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+    this.cvService.upload(file.name, dataUrl.slice(dataUrl.indexOf(',') + 1)).subscribe({
+      next: (info) => {
+        this.cv.set(info);
+        this.successMessage.set(Messages[MessageKey.CV_UPLOADED]);
+        input.value = '';
+      },
+      error: () => this.errorMessage.set(Messages[MessageKey.CV_UPLOAD_FAILED]),
+    });
+  }
+
+  removeCv() {
+    this.cvService.remove().subscribe(() => this.cv.set(null));
   }
 
   async onImage(event: Event, field: keyof typeof IMAGE_SIZE) {

@@ -24,6 +24,7 @@ const WORKSPACES = [
 const FILE_PAGES = [
   { route: '/skills', file: 'skills.md' },
   { route: '/readme', file: 'README.md' },
+  { route: '/important', file: 'important' },
 ];
 
 type TerminalState = 'open' | 'max' | 'closed';
