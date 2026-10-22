@@ -3,7 +3,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ContactService } from '../../core/services/contact.service';
 import { MessageKey, Messages } from '../../core/constants/messages';
 import { ContentService } from '../../core/services/content.service';
-import { PROFILE } from '../../core/constants/profile';
 
 @Component({
   imports: [ReactiveFormsModule],
@@ -15,7 +14,6 @@ export class ContactComponent {
   private fb = inject(FormBuilder);
   private contactService = inject(ContactService);
   protected content = inject(ContentService);
-  protected readonly github = PROFILE.github;
 
   isSubmitting = signal(false);
   successMessage = signal<string | null>(null);

@@ -426,7 +426,7 @@ const COMMANDS = {
     summary: 'GitHub profile and repositories',
     usage: 'github',
     run: (_, sh) => [
-      textLines(`profile  ${PROFILE.github}`)[0],
+      textLines(`profile  ${sh.data.github}`)[0],
       ...sh.data.projects
         .filter((p) => p.repoUrl)
         .map((p) => textLines(`  ${slugify(p.title).padEnd(22)}${p.repoUrl}`)[0]),

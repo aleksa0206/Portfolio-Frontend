@@ -3,7 +3,6 @@ import { About } from '../core/models/about.model';
 import { Education } from '../core/models/education.model';
 import { License } from '../core/models/license.model';
 import { Project } from '../core/models/project.model';
-import { PROFILE } from '../core/constants/profile';
 import { VDir, VNode, dir, file } from './vfs';
 
 export interface PortfolioData {
@@ -12,6 +11,7 @@ export interface PortfolioData {
   education: Education[];
   licenses: License[];
   location: string;
+  github: string;
   readme: (repoUrl: string) => Promise<string>;
 }
 
@@ -93,7 +93,7 @@ function contactTxt(d: PortfolioData): string {
   return `${table([
     ['email', withNote('email', d.about?.email)],
     ['phone', d.about?.phone],
-    ['github', withNote('github', PROFILE.github)],
+    ['github', withNote('github', d.github)],
     ['linkedin', withNote('linkedin', d.about?.linkedinUrl)],
     ...(d.about?.contactLinks ?? []).map((l): [string, string] => [l.label, l.value]),
     ['location', withNote('location', d.location)],

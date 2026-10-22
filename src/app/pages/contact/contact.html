@@ -10,7 +10,7 @@
     }
     <dt>github</dt>
     <dd>
-      <a [href]="github" target="_blank" rel="noopener">{{ github }}</a>
+      <a [href]="content.github()" target="_blank" rel="noopener">{{ content.github() }}</a>
       <span class="note">{{ content.text('contact.note.github') }}</span>
     </dd>
     @if (content.about()?.linkedinUrl; as linkedin) {

@@ -7,6 +7,7 @@ export interface About {
   faviconUrl?: string;
   tagline?: string;
   linkedinUrl?: string;
+  githubUrl?: string;
   contactLinks?: ContactLink[];
   texts?: Partial<Record<string, string>>;
   email?: string;
@@ -23,6 +24,7 @@ export interface AboutInput {
   faviconUrl?: string;
   tagline?: string;
   linkedinUrl?: string;
+  githubUrl?: string;
   contactLinks?: ContactLink[];
   texts?: Partial<Record<string, string>>;
   email?: string;

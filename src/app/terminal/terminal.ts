@@ -73,6 +73,7 @@ export class TerminalComponent {
     education: this.content.education(),
     licenses: this.content.licenses(),
     location: this.content.location(),
+    github: this.content.github(),
     readme: (url) => firstValueFrom(this.readmeService.get(url)),
   }));
   private root = computed(() => buildFs(this.data()));

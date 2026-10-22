@@ -37,6 +37,7 @@ const data: PortfolioData = {
   education: [],
   licenses: [],
   location: 'Belgrade, Serbia',
+  github: 'https://github.com/aleksa0206',
   readme: async () => '# TaskMaster\nreadme body',
 };
 

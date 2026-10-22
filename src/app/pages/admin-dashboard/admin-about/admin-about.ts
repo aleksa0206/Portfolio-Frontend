@@ -48,6 +48,7 @@ export class AdminAbout implements OnInit {
     phone: [''],
     location: [''],
     linkedinUrl: ['', Validators.pattern(/^https:\/\/\S+$/)],
+    githubUrl: ['', Validators.pattern(/^https:\/\/\S+$/)],
     contactLinks: this.fb.array<FormGroup>([]),
     texts: this.fb.group(Object.fromEntries(Object.keys(SITE_TEXTS).map((k) => [k, ['', knownCommands]]))),
   });
@@ -55,7 +56,7 @@ export class AdminAbout implements OnInit {
   siteTexts = Object.entries(SITE_TEXTS)
     .filter(([key]) => !key.startsWith('contact.note.'))
     .map(([key, t]) => ({ key, ...t }));
-  github = PROFILE.github;
+  github = PROFILE.github; // placeholder: used while the GitHub URL field is empty
   formValue = toSignal(this.aboutForm.valueChanges, { initialValue: this.aboutForm.value });
 
   ngOnInit() {
@@ -73,6 +74,7 @@ export class AdminAbout implements OnInit {
             phone: data.phone ?? '',
             location: data.location ?? '',
             linkedinUrl: data.linkedinUrl ?? '',
+            githubUrl: data.githubUrl ?? '',
             texts: data.texts ?? {},
           });
           (data.contactLinks ?? []).forEach((l) => this.addContactLink(l.label, l.value));

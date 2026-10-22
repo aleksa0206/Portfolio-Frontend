@@ -26,6 +26,7 @@ export class ContentService {
   isLoading = signal(true);
 
   location = computed(() => this.about()?.location || PROFILE.location);
+  github = computed(() => this.about()?.githubUrl || PROFILE.github);
 
   text(key: SiteTextKey): string {
     return this.about()?.texts?.[key]?.trim() || SITE_TEXTS[key].default;
