@@ -9,6 +9,7 @@ export interface About {
   linkedinUrl?: string;
   githubUrl?: string;
   contactLinks?: ContactLink[];
+  skills?: Skill[];
   texts?: Partial<Record<string, string>>;
   email?: string;
   phone?: string;
@@ -26,6 +27,7 @@ export interface AboutInput {
   linkedinUrl?: string;
   githubUrl?: string;
   contactLinks?: ContactLink[];
+  skills?: Skill[];
   texts?: Partial<Record<string, string>>;
   email?: string;
   phone?: string;
@@ -35,4 +37,10 @@ export interface AboutInput {
 export interface ContactLink {
   label: string;
   value: string;
+}
+
+// A row in skills.md, written in the admin
+export interface Skill {
+  name: string;
+  description: string;
 }

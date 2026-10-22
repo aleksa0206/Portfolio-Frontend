@@ -130,10 +130,15 @@ describe('commands', () => {
     expect(text(await execute('tree projects', sh))).toContain('2 directories, 3 files');
   });
 
-  it('skills are derived from project stacks only', async () => {
+  it('skills fall back to project stacks until the admin writes a list', async () => {
     const { sh } = shell();
+    expect(text(await execute('skills', sh))).toMatch(/- Python\s+TaskMaster, Developer Portfolio/);
+
+    sh.data.about = { ...sh.data.about!, skills: [{ name: 'Linux', description: 'daily' }] };
+    sh.root = buildFs(sh.data);
     const out = text(await execute('skills', sh));
-    expect(out).toMatch(/- Python\s+TaskMaster, Developer Portfolio/);
+    expect(out).toMatch(/- Linux\s+daily/);
+    expect(out).not.toContain('Python');
   });
 
   it('open and the hire script navigate', async () => {

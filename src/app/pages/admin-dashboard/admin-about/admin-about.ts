@@ -9,6 +9,9 @@ import {
 } from '@angular/forms';
 import { PROFILE } from '../../../core/constants/profile';
 import { AboutService } from '../../../core/services/about.service';
+import { ProjectService } from '../../../core/services/project.service';
+import { Skill } from '../../../core/models/about.model';
+import { skillList } from '../../../terminal/portfolio-fs';
 import { MessageKey, Messages } from '../../../core/constants/messages';
 import { CONSENT_REPEAT, SITE_TEXTS } from '../../../core/constants/site-texts';
 
@@ -28,6 +31,7 @@ const PRANK_MINUTES = [1, 3, 5, 10, 15];
 export class AdminAbout implements OnInit {
   private fb = inject(FormBuilder);
   private aboutService = inject(AboutService);
+  private projectService = inject(ProjectService);
 
   isLoading = signal(true);
   successMessage = signal<string | null>(null);
@@ -45,6 +49,7 @@ export class AdminAbout implements OnInit {
     linkedinUrl: ['', Validators.pattern(/^https:\/\/\S+$/)],
     githubUrl: ['', Validators.pattern(/^https:\/\/\S+$/)],
     contactLinks: this.fb.array<FormGroup>([]),
+    skills: this.fb.array<FormGroup>([]),
     texts: this.fb.group(Object.fromEntries(Object.keys(SITE_TEXTS).map((k) => [k, '']))),
   });
   // contact notes sit next to their contact field and the popup repeat is a select, not in this list
@@ -74,6 +79,16 @@ export class AdminAbout implements OnInit {
             texts: data.texts ?? {},
           });
           (data.contactLinks ?? []).forEach((l) => this.addContactLink(l.label, l.value));
+        }
+        if (data?.skills?.length) {
+          data.skills.forEach((s) => this.addSkill(s.name, s.description));
+        } else {
+          // no list saved yet: start from what the site shows now (techs from the projects)
+          this.projectService
+            .getAll()
+            .subscribe((projects) =>
+              skillList(null, projects).forEach((s) => this.addSkill(s.name, s.description)),
+            );
         }
         this.isLoading.set(false);
       },
@@ -106,6 +121,19 @@ export class AdminAbout implements OnInit {
     this.aboutForm.controls.contactLinks.removeAt(i);
   }
 
+  addSkill(name = '', description = '') {
+    this.aboutForm.controls.skills.push(
+      this.fb.group({
+        name: [name, Validators.maxLength(40)],
+        description: [description, Validators.maxLength(200)],
+      }),
+    );
+  }
+
+  removeSkill(i: number) {
+    this.aboutForm.controls.skills.removeAt(i);
+  }
+
   async onImage(event: Event, field: keyof typeof IMAGE_SIZE) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file) return;
@@ -129,6 +157,9 @@ export class AdminAbout implements OnInit {
     formValue.contactLinks = formValue.contactLinks
       .map((l: { label: string; value: string }) => ({ label: l.label.trim(), value: l.value.trim() }))
       .filter((l: { label: string; value: string }) => l.label && l.value);
+    formValue.skills = formValue.skills
+      .map((s: Skill) => ({ name: s.name.trim(), description: s.description.trim() }))
+      .filter((s: Skill) => s.name);
 
     this.aboutService.save(formValue).subscribe({
       next: () => {

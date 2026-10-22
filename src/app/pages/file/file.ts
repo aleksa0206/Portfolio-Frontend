@@ -1,7 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ContentService } from '../../core/services/content.service';
-import { skillsByTech } from '../../terminal/portfolio-fs';
+import { skillList } from '../../terminal/portfolio-fs';
 
 // skills.md and README.md in the view window, laid out like the other pages (.doc, .kv).
 // Same content as the terminal versions in portfolio-fs.ts (skillsMd, SITE_README).
@@ -13,11 +13,11 @@ import { skillsByTech } from '../../terminal/portfolio-fs';
         <h1>{{ content.text('skills.heading') }}</h1>
         <p class="text">{{ content.text('skills.intro') }}</p>
         <dl class="kv">
-          @for (s of skills(); track s[0]) {
-            <dt>{{ s[0] }}</dt>
-            <dd>{{ s[1].join(', ') }}</dd>
+          @for (s of skills(); track $index) {
+            <dt>{{ s.name }}</dt>
+            <dd>{{ s.description }}</dd>
           } @empty {
-            <p class="meta">No projects listed yet.</p>
+            <p class="meta">Nothing listed yet.</p>
           }
         </dl>
       } @else {
@@ -45,5 +45,5 @@ export class FileComponent {
   protected content = inject(ContentService);
   protected file = inject(ActivatedRoute).snapshot.data['file'] as 'skills.md' | 'README.md';
 
-  skills = computed(() => skillsByTech(this.content.projects()));
+  skills = computed(() => skillList(this.content.about(), this.content.projects()));
 }

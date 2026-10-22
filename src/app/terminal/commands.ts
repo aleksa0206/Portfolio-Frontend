@@ -1,7 +1,7 @@
 // Command registry. Each command is a pure-ish function of (args, shell state) -> output lines.
 import { PROFILE } from '../core/constants/profile';
 import { parse } from './parser';
-import { PortfolioData, skillsByTech, slugify, sortedEducation, yearRange } from './portfolio-fs';
+import { PortfolioData, skillList, slugify, sortedEducation, yearRange } from './portfolio-fs';
 import { HOME, VDir, VFile, VNode, displayPath, lookup, resolvePath, sortedChildren } from './vfs';
 
 export type Tone = 'muted' | 'accent' | 'teal' | 'blue' | 'error' | 'dir' | 'exec';
@@ -277,9 +277,9 @@ function neofetch(_: string[], sh: Shell): Line[] {
     kv('Projects', `${projects.length}, see ~/projects`),
     kv(
       'Stack',
-      skillsByTech(projects)
+      skillList(about, projects)
         .slice(0, 5)
-        .map(([t]) => t)
+        .map((s) => s.name)
         .join(', ') || undefined,
     ),
     kv('Site', 'Angular 22 · Node.js/Express API'),

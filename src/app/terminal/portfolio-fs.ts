@@ -1,6 +1,6 @@
 // Builds the virtual filesystem from real portfolio data (the same API data the pages use).
 import { SITE_TEXTS } from '../core/constants/site-texts';
-import { About } from '../core/models/about.model';
+import { About, Skill } from '../core/models/about.model';
 import { Education } from '../core/models/education.model';
 import { License } from '../core/models/license.model';
 import { Project } from '../core/models/project.model';
@@ -43,6 +43,12 @@ export function skillsByTech(projects: Project[]): [string, string[]][] {
     .map((e) => [e.name, e.projects]);
 }
 
+// The skills list the admin wrote; until one is saved, the techs from the project stacks
+export function skillList(about: About | null, projects: Project[]): Skill[] {
+  if (about?.skills?.length) return about.skills;
+  return skillsByTech(projects).map(([name, used]) => ({ name, description: used.join(', ') }));
+}
+
 export function yearRange(e: Education): string {
   const start = e.startDate.slice(0, 4);
   if (!e.endDate) return `${start} — present`;
@@ -66,13 +72,13 @@ function aboutMd(d: PortfolioData): string {
 }
 
 function skillsMd(d: PortfolioData): string {
-  // heading and intro are admin site texts, the list comes from the projects
+  // heading, intro and the list itself are written in the admin
   const text = (key: 'skills.heading' | 'skills.intro') =>
     d.about?.texts?.[key]?.trim() || SITE_TEXTS[key].default;
-  const skills = skillsByTech(d.projects);
-  if (!skills.length) return `# ${text('skills.heading')}\n\nNo projects listed yet.`;
-  const width = Math.max(...skills.map(([t]) => t.length)) + 2;
-  const rows = skills.map(([tech, used]) => `- ${tech.padEnd(width)}${used.join(', ')}`);
+  const skills = skillList(d.about, d.projects);
+  if (!skills.length) return `# ${text('skills.heading')}\n\nNothing listed yet.`;
+  const width = Math.max(...skills.map((s) => s.name.length)) + 2;
+  const rows = skills.map((s) => `- ${s.name.padEnd(width)}${s.description}`.trimEnd());
   return `# ${text('skills.heading')}\n\n${text('skills.intro')}\n\n${rows.join('\n')}`;
 }
 

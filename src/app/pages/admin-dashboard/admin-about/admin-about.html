@@ -103,6 +103,27 @@
       </div>
       <button type="button" class="small add-row" (click)="addContactLink()">+ Add contact</button>
 
+      <h3>Skills</h3>
+      <p class="hint">
+        The list in skills.md, in this order. The text on the right is optional. Empty rows are
+        ignored.
+      </p>
+      <div formArrayName="skills">
+        @for (skill of aboutForm.controls.skills.controls; track skill; let i = $index) {
+          <div class="form-group contact-row" [formGroupName]="i">
+            <input type="text" formControlName="name" placeholder="skill" aria-label="Skill" />
+            <input
+              type="text"
+              formControlName="description"
+              placeholder="text on the right (optional)"
+              aria-label="Skill description"
+            />
+            <button type="button" class="small" (click)="removeSkill(i)">Remove</button>
+          </div>
+        }
+      </div>
+      <button type="button" class="small add-row" (click)="addSkill()">+ Add skill</button>
+
       <h3>Popup</h3>
       <div class="form-group">
         <label for="consent-repeat">Show the "don't do anything stupid" popup</label>
