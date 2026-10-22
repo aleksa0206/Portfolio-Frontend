@@ -1,12 +1,19 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { AboutService } from '../../../core/services/about.service';
 import { MessageKey, Messages } from '../../../core/constants/messages';
-import { SITE_TEXTS } from '../../../core/constants/site-texts';
+import { SITE_TEXTS, unknownCommands } from '../../../core/constants/site-texts';
+import { COMMAND_NAMES } from '../../../terminal/commands';
 
 // Longest side in px. Images are stored inline in the DB, so keep them small.
 const IMAGE_SIZE = { photoUrl: 256, faviconUrl: 64 };
+
+// Blocks saving a site text whose `backticked` command the terminal doesn't have
+const knownCommands: ValidatorFn = (c) => {
+  const bad = unknownCommands(c.value ?? '', COMMAND_NAMES);
+  return bad.length ? { unknownCommands: bad } : null;
+};
 
 @Component({
   imports: [ReactiveFormsModule],
@@ -32,7 +39,7 @@ export class AdminAbout implements OnInit {
     email: [''],
     phone: [''],
     location: [''],
-    texts: this.fb.group(Object.fromEntries(Object.keys(SITE_TEXTS).map((k) => [k, '']))),
+    texts: this.fb.group(Object.fromEntries(Object.keys(SITE_TEXTS).map((k) => [k, ['', knownCommands]]))),
   });
   siteTexts = Object.entries(SITE_TEXTS).map(([key, t]) => ({ key, ...t }));
   formValue = toSignal(this.aboutForm.valueChanges, { initialValue: this.aboutForm.value });

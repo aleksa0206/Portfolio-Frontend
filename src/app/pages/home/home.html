@@ -25,8 +25,15 @@
       <dd class="text">{{ content.text('home.next.contact') }}</dd>
     </dl>
 
-    <p class="meta">
-      {{ content.text('home.terminalHint') }} <code>help</code>, <code>ls</code>, <code>cat about.md</code>
+    <p class="meta text">
+      @for (part of splitCode(content.text('home.terminalHint')); track $index) {
+        <!-- one element per part: bare text here would pick up template whitespace -->
+        @if (part.code) {
+          <code>{{ part.text }}</code>
+        } @else {
+          <span>{{ part.text }}</span>
+        }
+      }
     </p>
   </article>
 } @else if (content.isLoading()) {

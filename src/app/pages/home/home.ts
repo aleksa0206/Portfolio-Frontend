@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ContentService } from '../../core/services/content.service';
+import { splitCode } from '../../core/constants/site-texts';
 
 @Component({
   imports: [RouterLink],
@@ -10,4 +11,5 @@ import { ContentService } from '../../core/services/content.service';
 })
 export class HomeComponent {
   protected content = inject(ContentService);
+  protected readonly splitCode = splitCode;
 }

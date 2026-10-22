@@ -13,7 +13,8 @@ import { firstValueFrom } from 'rxjs';
 import { ContentService } from '../core/services/content.service';
 import { ReadmeService } from '../core/services/readme.service';
 import { PROFILE } from '../core/constants/profile';
-import { COMMAND_NAMES, Line, execute, textLines } from './commands';
+import { COMMAND_NAMES, Line, Seg, execute, textLines } from './commands';
+import { splitCode } from '../core/constants/site-texts';
 import { complete } from './complete';
 import { PortfolioData, buildFs } from './portfolio-fs';
 import { HOME, displayPath } from './vfs';
@@ -26,16 +27,12 @@ interface Entry {
   welcome?: true; // rendered from welcome(), so it updates once the About text loads
 }
 
-const HINT: Line[] = [
-  [
-    { text: 'Type ' },
-    { text: 'help', tone: 'accent' },
-    { text: ' for commands, or start with ' },
-    { text: 'ls', tone: 'accent' },
-    { text: '.' },
-  ],
-  [],
-];
+// Admin text where `backticked` commands are highlighted, as in the old hardcoded hint
+function hintLines(text: string): Line[] {
+  return text
+    .split('\n')
+    .map((l) => splitCode(l).map((p): Seg => (p.code ? { text: p.text, tone: 'accent' } : { text: p.text })));
+}
 
 @Component({
   imports: [OutputLine],
@@ -56,11 +53,12 @@ export class TerminalComponent {
   prompt = computed(() => `${PROFILE.user}@${PROFILE.host}:${displayPath(this.cwd())}$`);
   title = computed(() => `${PROFILE.user}@${PROFILE.host}: ${displayPath(this.cwd())}`);
   entries = signal<Entry[]>([{ welcome: true, out: [] }]);
-  welcome = computed<Line[]>(() =>
-    this.content.isLoading()
-      ? HINT
-      : [...textLines(this.content.text('terminal.welcome')), ...HINT],
-  );
+  welcome = computed<Line[]>(() => {
+    const hint = [...hintLines(this.content.text('terminal.hint')), []];
+    return this.content.isLoading()
+      ? hint
+      : [...textLines(this.content.text('terminal.welcome')), ...hint];
+  });
   value = signal('');
   busy = signal(false);
 

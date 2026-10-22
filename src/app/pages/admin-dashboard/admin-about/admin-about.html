@@ -57,7 +57,10 @@
       </div>
 
       <h3>Site texts</h3>
-      <p class="hint">Leave a field empty to keep the default shown in it.</p>
+      <p class="hint">
+        Leave a field empty to keep the default shown in it. Put commands in `backticks` to
+        highlight them.
+      </p>
       <div formGroupName="texts">
         @for (t of siteTexts; track t.key) {
           <div class="form-group">
@@ -68,6 +71,9 @@
               [formControlName]="t.key"
               [placeholder]="t.default"
             ></textarea>
+            @if (aboutForm.get(['texts', t.key])?.errors?.['unknownCommands']; as bad) {
+              <p class="field-error">The terminal has no command: {{ bad.join(', ') }}</p>
+            }
           </div>
         }
       </div>

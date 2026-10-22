@@ -4,6 +4,7 @@ import { parse } from './parser';
 import { PortfolioData, buildFs } from './portfolio-fs';
 import { HOME, resolvePath } from './vfs';
 import { COMMAND_NAMES } from './commands';
+import { splitCode, unknownCommands } from '../core/constants/site-texts';
 
 const data: PortfolioData = {
   about: {
@@ -161,5 +162,17 @@ describe('complete', () => {
   it('lists options when ambiguous', () => {
     const result = complete('cat ~/projects/TaskMaster/', root, HOME, COMMAND_NAMES);
     expect(result.options).toEqual(['README.md', 'info.txt']);
+  });
+});
+
+describe('site texts', () => {
+  it('splits backticked commands and flags unknown ones', () => {
+    expect(splitCode('Type `help` now')).toEqual([
+      { text: 'Type ', code: false },
+      { text: 'help', code: true },
+      { text: ' now', code: false },
+    ]);
+    expect(unknownCommands('`help`, `cat about.md`, `./hire-aleksa.sh`', COMMAND_NAMES)).toEqual([]);
+    expect(unknownCommands('try `sudo rm`', COMMAND_NAMES)).toEqual(['sudo']);
   });
 });
