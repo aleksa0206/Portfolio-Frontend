@@ -24,6 +24,11 @@ export const SITE_TEXTS = {
     label: 'Terminal hint (under the welcome)',
     default: 'Type `help` for commands, or start with `ls`.',
   },
+  // Optional notes shown to the right of a contact row
+  'contact.note.email': { label: 'Contact: note next to email', default: '' },
+  'contact.note.github': { label: 'Contact: note next to github', default: '' },
+  'contact.note.linkedin': { label: 'Contact: note next to linkedin', default: '' },
+  'contact.note.location': { label: 'Contact: note next to location', default: '' },
 } satisfies Record<string, { label: string; default: string }>;
 
 export type SiteTextKey = keyof typeof SITE_TEXTS;

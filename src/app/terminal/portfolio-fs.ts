@@ -85,13 +85,18 @@ function educationMd(list: Education[]): string {
 }
 
 function contactTxt(d: PortfolioData): string {
+  // Value plus the optional admin note (site text `contact.note.<key>`) to its right
+  const withNote = (key: string, value?: string) => {
+    const note = d.about?.texts?.[`contact.note.${key}`]?.trim();
+    return value && note ? `${value}  ${note}` : value;
+  };
   return `${table([
-    ['email', d.about?.email],
+    ['email', withNote('email', d.about?.email)],
     ['phone', d.about?.phone],
-    ['github', PROFILE.github],
-    ['linkedin', d.about?.linkedinUrl],
+    ['github', withNote('github', PROFILE.github)],
+    ['linkedin', withNote('linkedin', d.about?.linkedinUrl)],
     ...(d.about?.contactLinks ?? []).map((l): [string, string] => [l.label, l.value]),
-    ['location', d.location],
+    ['location', withNote('location', d.location)],
   ])}\n\nPrefer a form? Run: open contact.txt`;
 }
 

@@ -5,16 +5,19 @@
       <dt>email</dt>
       <dd>
         <a [href]="'mailto:' + email">{{ email }}</a>
+        <span class="note">{{ content.text('contact.note.email') }}</span>
       </dd>
     }
     <dt>github</dt>
     <dd>
       <a [href]="github" target="_blank" rel="noopener">{{ github }}</a>
+      <span class="note">{{ content.text('contact.note.github') }}</span>
     </dd>
     @if (content.about()?.linkedinUrl; as linkedin) {
       <dt>linkedin</dt>
       <dd>
         <a [href]="linkedin" target="_blank" rel="noopener">{{ linkedin }}</a>
+        <span class="note">{{ content.text('contact.note.linkedin') }}</span>
       </dd>
     }
     @for (link of content.about()?.contactLinks ?? []; track $index) {
@@ -28,7 +31,10 @@
       </dd>
     }
     <dt>location</dt>
-    <dd>{{ content.location() }}</dd>
+    <dd>
+      {{ content.location() }}
+      <span class="note">{{ content.text('contact.note.location') }}</span>
+    </dd>
   </dl>
 
   <h2>send a message</h2>

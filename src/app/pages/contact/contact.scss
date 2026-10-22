@@ -1,0 +1,8 @@
+.note {
+  margin-left: 0.75rem;
+  color: var(--color-muted);
+
+  &:empty {
+    display: none;
+  }
+}
