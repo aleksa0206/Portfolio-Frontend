@@ -41,46 +41,65 @@
         <input id="favicon" type="file" accept="image/*" (change)="onImage($event, 'faviconUrl')" />
       </div>
 
+      <h3>Contact</h3>
+      <p class="hint">The note field next to each one is optional text shown to the right of it.</p>
+
       <div class="form-group">
-        <label for="email">Email (optional)</label>
-        <input id="email" type="email" formControlName="email" />
+        <label for="email">Email</label>
+        <div class="with-note">
+          <input id="email" type="email" formControlName="email" />
+          <input type="text" [formControl]="note('email')" placeholder="note (optional)" aria-label="Email note" />
+        </div>
       </div>
 
       <div class="form-group">
-        <label for="phone">Phone (optional)</label>
+        <label for="phone">Phone</label>
         <input id="phone" type="text" formControlName="phone" />
       </div>
 
       <div class="form-group">
-        <label for="location">Location (optional)</label>
-        <input id="location" type="text" formControlName="location" />
+        <label for="github-note">GitHub ({{ github }})</label>
+        <div class="with-note">
+          <input id="github-note" type="text" [formControl]="note('github')" placeholder="note (optional)" />
+        </div>
       </div>
 
       <div class="form-group">
-        <label for="linkedinUrl">LinkedIn URL (optional)</label>
-        <input
-          id="linkedinUrl"
-          type="url"
-          formControlName="linkedinUrl"
-          placeholder="https://www.linkedin.com/in/username"
-        />
+        <label for="linkedinUrl">LinkedIn URL</label>
+        <div class="with-note">
+          <input
+            id="linkedinUrl"
+            type="url"
+            formControlName="linkedinUrl"
+            placeholder="https://www.linkedin.com/in/username"
+          />
+          <input type="text" [formControl]="note('linkedin')" placeholder="note (optional)" aria-label="LinkedIn note" />
+        </div>
         @if (aboutForm.get('linkedinUrl')?.invalid) {
           <p class="field-error">Use a full link starting with https://</p>
         }
       </div>
 
+      <div class="form-group">
+        <label for="location">Location</label>
+        <div class="with-note">
+          <input id="location" type="text" formControlName="location" />
+          <input type="text" [formControl]="note('location')" placeholder="note (optional)" aria-label="Location note" />
+        </div>
+      </div>
+
       <h3>Other contacts</h3>
-      <p class="hint">Extra rows on the contact page, e.g. twitter → https://x.com/you.</p>
+      <p class="hint">Extra rows on the contact page, e.g. twitter → https://x.com/you. Empty rows are ignored.</p>
       <div formArrayName="contactLinks">
         @for (link of aboutForm.controls.contactLinks.controls; track link; let i = $index) {
-          <div class="contact-row" [formGroupName]="i">
+          <div class="form-group contact-row" [formGroupName]="i">
             <input type="text" formControlName="label" placeholder="label" aria-label="Label" />
             <input type="text" formControlName="value" placeholder="value or https:// link" aria-label="Value" />
-            <button type="button" (click)="removeContactLink(i)">Remove</button>
+            <button type="button" class="small" (click)="removeContactLink(i)">Remove</button>
           </div>
         }
       </div>
-      <button type="button" class="add-row" (click)="addContactLink()">+ Add contact</button>
+      <button type="button" class="small add-row" (click)="addContactLink()">+ Add contact</button>
 
       <h3>Site texts</h3>
       <p class="hint">

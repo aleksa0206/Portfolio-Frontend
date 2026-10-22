@@ -1,6 +1,14 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
+import { PROFILE } from '../../../core/constants/profile';
 import { AboutService } from '../../../core/services/about.service';
 import { MessageKey, Messages } from '../../../core/constants/messages';
 import { SITE_TEXTS, unknownCommands } from '../../../core/constants/site-texts';
@@ -43,7 +51,11 @@ export class AdminAbout implements OnInit {
     contactLinks: this.fb.array<FormGroup>([]),
     texts: this.fb.group(Object.fromEntries(Object.keys(SITE_TEXTS).map((k) => [k, ['', knownCommands]]))),
   });
-  siteTexts = Object.entries(SITE_TEXTS).map(([key, t]) => ({ key, ...t }));
+  // contact notes are edited next to their contact field instead of in the Site texts list
+  siteTexts = Object.entries(SITE_TEXTS)
+    .filter(([key]) => !key.startsWith('contact.note.'))
+    .map(([key, t]) => ({ key, ...t }));
+  github = PROFILE.github;
   formValue = toSignal(this.aboutForm.valueChanges, { initialValue: this.aboutForm.value });
 
   ngOnInit() {
@@ -77,10 +89,15 @@ export class AdminAbout implements OnInit {
   addContactLink(label = '', value = '') {
     this.aboutForm.controls.contactLinks.push(
       this.fb.group({
-        label: [label, [Validators.required, Validators.maxLength(30)]],
-        value: [value, [Validators.required, Validators.maxLength(300)]],
+        label: [label, Validators.maxLength(30)],
+        value: [value, Validators.maxLength(300)],
       }),
     );
+  }
+
+  note(key: 'email' | 'github' | 'linkedin' | 'location') {
+    // array path: a string path would split the dotted key
+    return this.aboutForm.controls.texts.get([`contact.note.${key}`]) as FormControl<string>;
   }
 
   removeContactLink(i: number) {
@@ -107,6 +124,9 @@ export class AdminAbout implements OnInit {
     this.errorMessage.set(null);
 
     const formValue = this.aboutForm.value as any;
+    formValue.contactLinks = formValue.contactLinks
+      .map((l: { label: string; value: string }) => ({ label: l.label.trim(), value: l.value.trim() }))
+      .filter((l: { label: string; value: string }) => l.label && l.value);
 
     this.aboutService.save(formValue).subscribe({
       next: () => {
