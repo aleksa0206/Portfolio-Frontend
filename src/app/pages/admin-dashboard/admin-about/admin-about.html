@@ -119,7 +119,7 @@
       <div class="form-group">
         <label for="prank-minutes">Trigger after</label>
         <select id="prank-minutes" [formControl]="textControl('prank.minutes')">
-          <option value="">default: 5 minutes</option>
+          <option value="">default: 3 minutes</option>
           @for (m of prankMinutes; track m) {
             <option [value]="'' + m">{{ m }} {{ m === 1 ? 'minute' : 'minutes' }}</option>
           }

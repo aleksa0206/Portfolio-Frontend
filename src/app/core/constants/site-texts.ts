@@ -39,7 +39,7 @@ export const SITE_TEXTS = {
   // How often the popup comes back; edited with a select in the admin, not as free text
   'consent.repeat': { label: 'Popup: show it', default: 'visit' satisfies ConsentRepeat },
   // Idle easter egg: red theme + evil smiley in the terminal; minutes is a select in the admin
-  'prank.minutes': { label: 'Easter egg: idle minutes', default: '5' },
+  'prank.minutes': { label: 'Easter egg: idle minutes', default: '3' },
   'prank.message': {
     label: 'Easter egg: message under the IP',
     default: "Didn't anyone teach you not to click on everything you see on the internet?",
