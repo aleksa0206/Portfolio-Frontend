@@ -1,174 +1,188 @@
 <section class="admin-about">
-  <h2>Manage About Section</h2>
+  <h2>{{ title }}</h2>
 
   @if (isLoading()) {
     <p>Loading...</p>
   } @else {
     <form [formGroup]="aboutForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="fullName">Full Name</label>
-        <input id="fullName" type="text" formControlName="fullName" />
-      </div>
-
-      <div class="form-group">
-        <label for="title">Title</label>
-        <input id="title" type="text" formControlName="title" />
-      </div>
-
-      <div class="form-group">
-        <label for="tagline">Tagline (optional, shown under your name)</label>
-        <textarea id="tagline" rows="2" formControlName="tagline"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label for="bio">Bio</label>
-        <textarea id="bio" rows="5" formControlName="bio"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label for="favicon">Browser tab icon (optional)</label>
-        @if (formValue().faviconUrl; as src) {
-          <img class="preview" [src]="src" alt="Current tab icon" width="32" height="32" />
-          <button type="button" class="small remove" (click)="aboutForm.patchValue({ faviconUrl: '' })">
-            Use default icon
-          </button>
-        }
-        <input id="favicon" type="file" accept="image/*" (change)="onImage($event, 'faviconUrl')" />
-      </div>
-
-      <h3>Contact</h3>
-      <p class="hint">The note field next to each one is optional text shown to the right of it.</p>
-
-      <div class="form-group">
-        <label for="email">Email</label>
-        <div class="with-note">
-          <input id="email" type="email" formControlName="email" />
-          <input type="text" [formControl]="note('email')" placeholder="note (optional)" aria-label="Email note" />
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="phone">Phone</label>
-        <div class="with-note">
-          <input id="phone" type="tel" formControlName="phone" />
-          <input type="text" [formControl]="note('phone')" placeholder="note (optional)" aria-label="Phone note" />
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="githubUrl">GitHub URL</label>
-        <div class="with-note">
-          <input id="githubUrl" type="url" formControlName="githubUrl" [placeholder]="github" />
-          <input type="text" [formControl]="note('github')" placeholder="note (optional)" aria-label="GitHub note" />
-        </div>
-        @if (aboutForm.get('githubUrl')?.invalid) {
-          <p class="field-error">Use a full link starting with https://</p>
-        }
-      </div>
-
-      <div class="form-group">
-        <label for="linkedinUrl">LinkedIn URL</label>
-        <div class="with-note">
-          <input
-            id="linkedinUrl"
-            type="url"
-            formControlName="linkedinUrl"
-            placeholder="https://www.linkedin.com/in/username"
-          />
-          <input type="text" [formControl]="note('linkedin')" placeholder="note (optional)" aria-label="LinkedIn note" />
-        </div>
-        @if (aboutForm.get('linkedinUrl')?.invalid) {
-          <p class="field-error">Use a full link starting with https://</p>
-        }
-      </div>
-
-      <div class="form-group">
-        <label for="location">Location</label>
-        <div class="with-note">
-          <input id="location" type="text" formControlName="location" />
-          <input type="text" [formControl]="note('location')" placeholder="note (optional)" aria-label="Location note" />
-        </div>
-      </div>
-
-      <h3>Other contacts</h3>
-      <p class="hint">Extra rows on the contact page, e.g. twitter → https://x.com/you. Empty rows are ignored.</p>
-      <div formArrayName="contactLinks">
-        @for (link of aboutForm.controls.contactLinks.controls; track link; let i = $index) {
-          <div class="form-group contact-row" [formGroupName]="i">
-            <input type="text" formControlName="label" placeholder="label" aria-label="Label" />
-            <input type="text" formControlName="value" placeholder="value or https:// link" aria-label="Value" />
-            <button type="button" class="small" (click)="removeContactLink(i)">Remove</button>
-          </div>
-        }
-      </div>
-      <button type="button" class="small add-row" (click)="addContactLink()">+ Add contact</button>
-
-      <h3>Skills</h3>
-      <p class="hint">
-        The list in skills.md, in this order. The text on the right is optional. Empty rows are
-        ignored.
-      </p>
-      <div formArrayName="skills">
-        @for (skill of aboutForm.controls.skills.controls; track skill; let i = $index) {
-          <div class="form-group contact-row" [formGroupName]="i">
-            <input type="text" formControlName="name" placeholder="skill" aria-label="Skill" />
-            <input
-              type="text"
-              formControlName="description"
-              placeholder="text on the right (optional)"
-              aria-label="Skill description"
-            />
-            <button type="button" class="small" (click)="removeSkill(i)">Remove</button>
-          </div>
-        }
-      </div>
-      <button type="button" class="small add-row" (click)="addSkill()">+ Add skill</button>
-
-      <h3>Popup</h3>
-      <div class="form-group">
-        <label for="consent-repeat">Show the "don't do anything stupid" popup</label>
-        <select id="consent-repeat" [formControl]="textControl('consent.repeat')">
-          <option value="">default: {{ consentRepeat[0][1] }}</option>
-          @for (opt of consentRepeat; track opt[0]) {
-            <option [value]="opt[0]">{{ opt[1] }}</option>
-          }
-        </select>
-      </div>
-
-      <h3>Idle easter egg</h3>
-      <p class="hint">
-        After this much inactivity the site turns red, the terminal shows the visitor's IP and
-        clicks are blocked for a few seconds. Texts are in Site texts below.
-      </p>
-      <div class="form-group">
-        <label for="prank-minutes">Trigger after</label>
-        <select id="prank-minutes" [formControl]="textControl('prank.minutes')">
-          <option value="">default: 3 minutes</option>
-          @for (m of prankMinutes; track m) {
-            <option [value]="'' + m">{{ m }} {{ m === 1 ? 'minute' : 'minutes' }}</option>
-          }
-          <option value="0">never (off)</option>
-        </select>
-      </div>
-
-      <h3>Site texts</h3>
-      <p class="hint">
-        Leave a field empty to keep the default shown in it. Put commands in `backticks` to
-        highlight them.
-      </p>
-      <div formGroupName="texts">
-        @for (t of siteTexts; track t.key) {
+      @switch (section) {
+        @case ('profile') {
           <div class="form-group">
-            <label [for]="t.key">{{ t.label }}</label>
-            <textarea
-              [id]="t.key"
-              rows="2"
-              [formControlName]="t.key"
-              [placeholder]="t.default"
-            ></textarea>
+            <label for="fullName">Full Name</label>
+            <input id="fullName" type="text" formControlName="fullName" />
+          </div>
+
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input id="title" type="text" formControlName="title" />
+          </div>
+
+          <div class="form-group">
+            <label for="tagline">Tagline (optional, shown above the title)</label>
+            <textarea id="tagline" rows="2" formControlName="tagline"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="bio">Bio</label>
+            <textarea id="bio" rows="8" formControlName="bio"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="favicon">Browser tab icon (optional)</label>
+            @if (formValue().faviconUrl; as src) {
+              <img class="preview" [src]="src" alt="Current tab icon" width="32" height="32" />
+              <button
+                type="button"
+                class="small remove"
+                (click)="aboutForm.patchValue({ faviconUrl: '' })"
+              >
+                Use default icon
+              </button>
+            }
+            <input id="favicon" type="file" accept="image/*" (change)="onImage($event, 'faviconUrl')" />
           </div>
         }
-      </div>
+
+        @case ('contact') {
+          <p class="hint">The note field next to each one is optional text shown to the right of it.</p>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <div class="with-note">
+              <input id="email" type="email" formControlName="email" />
+              <input type="text" [formControl]="note('email')" placeholder="note (optional)" aria-label="Email note" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <div class="with-note">
+              <input id="phone" type="tel" formControlName="phone" />
+              <input type="text" [formControl]="note('phone')" placeholder="note (optional)" aria-label="Phone note" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="githubUrl">GitHub URL</label>
+            <div class="with-note">
+              <input id="githubUrl" type="url" formControlName="githubUrl" [placeholder]="github" />
+              <input type="text" [formControl]="note('github')" placeholder="note (optional)" aria-label="GitHub note" />
+            </div>
+            @if (aboutForm.get('githubUrl')?.invalid) {
+              <p class="field-error">Use a full link starting with https://</p>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="linkedinUrl">LinkedIn URL</label>
+            <div class="with-note">
+              <input
+                id="linkedinUrl"
+                type="url"
+                formControlName="linkedinUrl"
+                placeholder="https://www.linkedin.com/in/username"
+              />
+              <input type="text" [formControl]="note('linkedin')" placeholder="note (optional)" aria-label="LinkedIn note" />
+            </div>
+            @if (aboutForm.get('linkedinUrl')?.invalid) {
+              <p class="field-error">Use a full link starting with https://</p>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="location">Location</label>
+            <div class="with-note">
+              <input id="location" type="text" formControlName="location" />
+              <input type="text" [formControl]="note('location')" placeholder="note (optional)" aria-label="Location note" />
+            </div>
+          </div>
+
+          <h3>Other contacts</h3>
+          <p class="hint">Extra rows on the contact page, e.g. twitter → https://x.com/you. Empty rows are ignored.</p>
+          <div formArrayName="contactLinks">
+            @for (link of aboutForm.controls.contactLinks.controls; track link; let i = $index) {
+              <div class="form-group contact-row" [formGroupName]="i">
+                <input type="text" formControlName="label" placeholder="label" aria-label="Label" />
+                <input type="text" formControlName="value" placeholder="value or https:// link" aria-label="Value" />
+                <button type="button" class="small" (click)="removeContactLink(i)">Remove</button>
+              </div>
+            }
+          </div>
+          <button type="button" class="small add-row" (click)="addContactLink()">+ Add contact</button>
+        }
+
+        @case ('skills') {
+          <p class="hint">
+            The list in skills.md, in this order. The text on the right is optional. Empty rows are
+            ignored.
+          </p>
+          <div formArrayName="skills">
+            @for (skill of aboutForm.controls.skills.controls; track skill; let i = $index) {
+              <div class="form-group contact-row" [formGroupName]="i">
+                <input type="text" formControlName="name" placeholder="skill" aria-label="Skill" />
+                <input
+                  type="text"
+                  formControlName="description"
+                  placeholder="text on the right (optional)"
+                  aria-label="Skill description"
+                />
+                <button type="button" class="small" (click)="removeSkill(i)">Remove</button>
+              </div>
+            }
+          </div>
+          <button type="button" class="small add-row" (click)="addSkill()">+ Add skill</button>
+        }
+
+        @case ('fun') {
+          <h3>Popup</h3>
+          <div class="form-group">
+            <label for="consent-repeat">Show the "don't do anything stupid" popup</label>
+            <select id="consent-repeat" [formControl]="textControl('consent.repeat')">
+              <option value="">default: {{ consentRepeat[0][1] }}</option>
+              @for (opt of consentRepeat; track opt[0]) {
+                <option [value]="opt[0]">{{ opt[1] }}</option>
+              }
+            </select>
+          </div>
+
+          <h3>Idle easter egg</h3>
+          <p class="hint">
+            After this much inactivity the site turns red, the terminal shows the visitor's IP and
+            clicks are blocked for a few seconds.
+          </p>
+          <div class="form-group">
+            <label for="prank-minutes">Trigger after</label>
+            <select id="prank-minutes" [formControl]="textControl('prank.minutes')">
+              <option value="">default: 3 minutes</option>
+              @for (m of prankMinutes; track m) {
+                <option [value]="'' + m">{{ m }} {{ m === 1 ? 'minute' : 'minutes' }}</option>
+              }
+              <option value="0">never (off)</option>
+            </select>
+          </div>
+        }
+      }
+
+      @if (siteTexts.length) {
+        <h3>Texts</h3>
+        <p class="hint">
+          Leave a field empty to keep the default shown in it. Put commands in `backticks` to
+          highlight them.
+        </p>
+        <div formGroupName="texts">
+          @for (t of siteTexts; track t.key) {
+            <div class="form-group">
+              <label [for]="t.key">{{ t.label }}</label>
+              <textarea
+                [id]="t.key"
+                rows="2"
+                [formControlName]="t.key"
+                [placeholder]="t.default"
+              ></textarea>
+            </div>
+          }
+        </div>
+      }
 
       @if (successMessage()) {
         <div class="success-banner">{{ successMessage() }}</div>

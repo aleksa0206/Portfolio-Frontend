@@ -29,7 +29,11 @@ export const routes: Routes = [
     component: AdminDashboard,
     canActivate: [authGuard],
     children: [
-      { path: 'about', component: AdminAbout },
+      { path: 'about', component: AdminAbout, data: { section: 'profile' } },
+      { path: 'contact-info', component: AdminAbout, data: { section: 'contact' } },
+      { path: 'skills', component: AdminAbout, data: { section: 'skills' } },
+      { path: 'texts', component: AdminAbout, data: { section: 'texts' } },
+      { path: 'fun', component: AdminAbout, data: { section: 'fun' } },
       { path: 'education', component: AdminEducation },
       { path: 'licenses', component: AdminLicense },
       { path: 'projects', component: AdminProject },

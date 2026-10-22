@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
 import {
   FormBuilder,
   FormControl,
@@ -21,6 +22,26 @@ const IMAGE_SIZE = { faviconUrl: 64 };
 // Site texts edited with a select instead of a textarea
 const SELECT_TEXTS = ['consent.repeat', 'prank.minutes'];
 const PRANK_MINUTES = [1, 3, 5, 10, 15];
+
+// The About record is edited across several admin pages (route data `section`);
+// each page shows its part of the form, and Save always sends the whole record.
+type Section = 'profile' | 'contact' | 'skills' | 'texts' | 'fun';
+const SECTION_TITLES: Record<Section, string> = {
+  profile: 'About',
+  contact: 'Contact info',
+  skills: 'Skills',
+  texts: 'Page texts',
+  fun: 'Popup & easter egg',
+};
+
+// Which page lists a site text, by key prefix (anything else goes to Page texts)
+function textSection(key: string): Section {
+  if (key.startsWith('home.')) return 'profile';
+  if (key.startsWith('contact.')) return 'contact';
+  if (key.startsWith('skills.')) return 'skills';
+  if (key.startsWith('consent.') || key.startsWith('prank.')) return 'fun';
+  return 'texts';
+}
 
 @Component({
   imports: [ReactiveFormsModule],
@@ -52,9 +73,12 @@ export class AdminAbout implements OnInit {
     skills: this.fb.array<FormGroup>([]),
     texts: this.fb.group(Object.fromEntries(Object.keys(SITE_TEXTS).map((k) => [k, '']))),
   });
-  // contact notes sit next to their contact field and the popup repeat is a select, not in this list
+  protected section: Section = inject(ActivatedRoute).snapshot.data['section'] ?? 'profile';
+  protected title = SECTION_TITLES[this.section];
+  // this page's texts; contact notes sit next to their field and selects are rendered separately
   siteTexts = Object.entries(SITE_TEXTS)
     .filter(([key]) => !key.startsWith('contact.note.') && !SELECT_TEXTS.includes(key))
+    .filter(([key]) => textSection(key) === this.section)
     .map(([key, t]) => ({ key, ...t }));
   github = PROFILE.github; // placeholder: used while the GitHub URL field is empty
   consentRepeat = Object.entries(CONSENT_REPEAT);
