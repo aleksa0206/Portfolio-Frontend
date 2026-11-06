@@ -1,84 +1,71 @@
 # Portfolio Frontend
 
-The Angular frontend for my personal portfolio — public pages for education, licenses, and projects, plus a full admin dashboard for managing content.
+Angular client for my personal site, [aleksao.me](https://aleksao.me). The site is a terminal: visitors browse my projects, education and contact details with shell commands, and each file opens in a window next to the terminal. All content comes from [Portfolio-Backend](https://github.com/aleksa0206/Portfolio-Backend) and is edited in an admin dashboard.
 
-**Live site:** https://aleksao.me
+## The terminal
 
-## Tech Stack
+The content is mapped onto a small virtual file system (`terminal/vfs.ts`, `terminal/portfolio-fs.ts`): `~/about.md`, `~/skills.md`, `~/education.md`, `~/contact.txt`, a folder per project and so on. The shell supports:
 
-- **Framework:** Angular 22 (standalone components, signals)
-- **Language:** TypeScript
-- **Styling:** SCSS with a design token system
-- **Forms:** Reactive Forms
-- **State:** Angular Signals
-- **HTTP:** Angular HttpClient with functional interceptors
-- **Deployment:** Docker (nginx) → Railway
+- `ls`, `cd`, `pwd`, `cat`, `tree`, `find`, `open`, `echo`, `history`, `clear`, `help`, `man`
+- shortcuts such as `about`, `projects`, `skills`, `education`, `contact`, `github`, `whoami`, `neofetch`
+- quoting and argument parsing (`terminal/parser.ts`), Tab completion of commands and paths (`terminal/complete.ts`) and command history
 
-## Features
+Commands are plain functions from arguments and shell state to output lines (`terminal/commands.ts`), so the logic is unit-tested without rendering anything.
 
-### Public site
+A project page shows the project's details and, when it links to a public GitHub repository, that repository's README.
 
-- Home page with animated hero section
-- Education, Licenses, and Projects listing pages
-- Contact form with client + server-side validation
+The site also has a few jokes, all configurable from the admin dashboard:
 
-### Admin dashboard
+- an "agreement" popup on the first visit;
+- a red "takeover" when the visitor stays idle for a while or types a destructive command like `rm -rf` or `sudo`;
+- an `important` file that eventually lets you download my CV.
 
-- JWT-based login, route-protected with a functional guard
-- Full CRUD for Education, Licenses, and Projects
-- Upsert form for the About section
-- Inbox for contact messages (read / delete)
+## Admin dashboard
 
-### UX details
+`/admin/login`, protected by a JWT and a route guard:
 
-- Route-based page transition animation showing the target page name
-- Auth interceptor that attaches the JWT to every protected request
-- Error interceptor that logs the user out automatically on a 401 response
+- profile, contact details, skills and the editable texts of the site
+- CRUD for education, licenses and projects
+- inbox for messages sent from the contact page
+- easter egg settings (how often the popup returns, idle timeout)
 
-## Architecture
+The auth interceptor attaches the token to API requests; the error interceptor signs the admin out on a `401`.
 
-src/app/
-├── core/
-│   ├── services/       # API communication per resource
-│   ├── guards/          # authGuard
-│   ├── interceptors/     # auth + error interceptors
-│   ├── models/            # TypeScript interfaces per resource
-│   └── constants/          # centralized UI message keys
-├── pages/
-│   ├── home/, education/, licenses/, projects/, contact/
-│   ├── admin-login/
-│   └── admin-dashboard/
-│       └── admin-*/          # one CRUD page per resource
-├── app.ts                      # root component, nav, page transitions
-├── app.routes.ts                 # route definitions (incl. nested admin routes)
-└── app.config.ts                   # router + HttpClient providers
+## Tech stack
 
-## Getting Started
+Angular 22 (standalone components, signals), TypeScript, SCSS, Reactive Forms, Vitest, nginx, Docker.
 
-### Prerequisites
+## Running locally
 
-- Node.js 22+
-- The portfolio-backend running locally or accessible remotely
+Requires Node.js 22+ and the backend running on `http://localhost:4000`.
 
-### Setup
-
+```bash
 npm install
-ng serve
+npm start          # http://localhost:4200
+npm test
+npm run build      # production build into dist/portfolio-frontend
+```
 
-App runs on `http://localhost:4200`. Configure the API URL in `src/environments/environment.ts`.
+The API URL is in `src/environments/environment.ts` (development) and `src/environments/environment.prod.ts` (production build, swapped in through `fileReplacements`).
 
-### Build
+## Structure
 
-ng build
-
-Production build uses `environment.prod.ts` via Angular's `fileReplacements` configuration.
+```
+src/app/
+  terminal/        shell: commands, parser, completion, virtual file system
+  pages/           the windows opened from the terminal (projects, education, licenses,
+                   contact, files) and the admin dashboard
+  core/            API services, models, auth guard, interceptors, site texts
+  consent-dialog.ts, idle-prank.ts   the easter eggs
+  matrix-rain.ts   background animation
+```
 
 ## Docker
 
+```bash
 docker build -t portfolio-frontend .
+```
 
-Served through nginx, configured for SPA routing (`try_files` fallback to `index.html`).
+A multi-stage build: the app is compiled with Node and served by nginx, which falls back to `index.html` for client-side routes and adds basic security headers.
 
-## Related Repositories
-
-- [portfolio-backend](https://github.com/aleksa0206/portfolio-backend) — Node.js / Express / Prisma API
+In production the site runs in Docker on my home server behind a Cloudflare Tunnel, together with the backend and MySQL.
